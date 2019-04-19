@@ -1,0 +1,62 @@
+service: ${file(package.json):name, 'texvet-api-v1'}
+plugins:
+  - serverless-domain-manager
+  - serverless-offline
+  - serverless-webpack
+
+package:
+  individually: true
+  exclude:
+    - .circleci/**
+    - data/**
+    - tests/**
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  defaultStage: default
+  defaultRegion: us-east-1
+  domains:
+    production: api.texvet.io
+    demo: demo-api.texvet.io
+    staging: staging-api.texvet.io
+    default: dev-api.texvet.io
+  customDomain:
+    domainName: ${self:custom.domains.${self:custom.stage}}
+    basePath: ""
+    stage: ${self:provider.stage}
+    createRoute53Record: true
+  webpack:
+    webpackConfig: webpack.config.js
+    includeModules: true
+    packager: npm
+  serverless-offline:
+    host: 0.0.0.0
+
+provider:
+  name: aws
+  stage: ${opt:stage, self:custom.defaultStage}
+  region: ${opt:region, self:custom.defaultRegion}
+  runtime: nodejs8.10
+  memorySize: 1024
+  timeout: 30
+  environment: ${file(env.yml):${self:custom.stage}, file(env.yml):${self:custom.defaultStage}}
+
+functions:
+  # API Functions
+  api:
+    handler: src/lambda.handler
+    warmup: true
+    events:
+      - http:
+          path: / # this matches the base path
+          method: ANY
+          cors: true
+      - http:
+          path: /auth/{any+} # this matches authenticated paths and will require a JWT. The token 'any' doesn't mean anything special.
+          method: ANY
+          cors: true
+          # authorizer: aws_iam
+      - http:
+          path: /public/{any+} # this matches any path. The token 'any' doesn't mean anything special
+          method: ANY
+          cors: true
