@@ -13,13 +13,13 @@ package:
 
 custom:
   stage: ${opt:stage, self:provider.stage}
-  defaultStage: default
+  defaultStage: development
   defaultRegion: us-east-1
   domains:
-    production: api.texvet.io
-    demo: demo-api.texvet.io
-    staging: staging-api.texvet.io
-    default: dev-api.texvet.io
+    development: dev-api.chatbot.texvet.org
+    staging: staging-api.chatbot.texvet.org
+    demo: demo-api.chatbot.texvet.org
+    production: api.chatbot.texvet.org
   customDomain:
     domainName: ${self:custom.domains.${self:custom.stage}}
     basePath: ""
@@ -55,7 +55,8 @@ functions:
           path: /auth/{any+} # this matches authenticated paths and will require a JWT. The token 'any' doesn't mean anything special.
           method: ANY
           cors: true
-          # authorizer: aws_iam
+          authorizer:
+            arn: ${self:provider.environment.USERPOOL_ARN}
       - http:
           path: /public/{any+} # this matches any path. The token 'any' doesn't mean anything special
           method: ANY
