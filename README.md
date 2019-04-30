@@ -68,5 +68,3 @@ To initialize the domains run the following command for each domain and replace 
   ```bash
   ./node_modules/serverless/bin/serverless create_domain --stage {STAGE_NAME}
   ```
-
-  trigger build

@@ -58,6 +58,16 @@ jobs:
           root: .
           paths: .serverless
 
+  build-demo:
+    executor: node8
+
+    steps:
+      - setup-dependencies
+      - run: npm run build:demo
+      - persist_to_workspace:
+          root: .
+          paths: .serverless
+
   build-production:
     executor: node8
 
