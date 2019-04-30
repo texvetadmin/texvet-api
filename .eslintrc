@@ -1,0 +1,40 @@
+{
+  "env": {
+    "node": true,
+    "es6": true,
+    "commonjs": true
+  },
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaVersion": 2018
+  },
+  "plugins": ["promise", "json", "unicorn", "security"],
+  "extends": ["airbnb-base", "plugin:security/recommended"],
+  "rules": {
+    "semi": ["error", "always"],
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
+    "strict": 0,
+    "indent": ["error", 2],
+    "arrow-parens": ["error", "as-needed"],
+    "no-underscore-dangle": 0,
+    "no-use-before-define": "error",
+    "no-console": "warn",
+    "no-plusplus": 0,
+    "no-minusminus": 0,
+    "no-unused-expressions": 0,
+    "object-curly-newline": 0,
+    "function-paren-newline": ["error", "consistent"],
+    "no-return-await": 0,
+    "curly": [2, "all"],
+    "unicorn/no-abusive-eslint-disable": "error",
+    "max-params": ["error", 5],
+    "max-depth": ["error", 3],
+    "promise/always-return": "error",
+    "promise/catch-or-return": "error",
+    "promise/param-names": "error",
+    "promise/no-return-wrap": "error",
+    "no-unused-vars": ["error", { "argsIgnorePattern": "next", "ignoreRestSiblings": true }],
+    "no-param-reassign": ["error", { "props": true, "ignorePropertyModificationsFor": ["result", "res"] }],
+    "newline-per-chained-call": ["error", { "ignoreChainWithDepth": 2 }]
+  }
+}
