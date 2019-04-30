@@ -1,0 +1,177 @@
+version: 2.1
+
+executors:
+  node8:
+    docker:
+      - image: circleci/node:8.10
+    working_directory: ~/repo
+
+commands:
+  setup-dependencies:
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package-lock.json" }}
+            - v1-dependencies-
+      - run: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package-lock.json" }}
+      - run: npm run lint
+      - run: ls -al
+  deploy-setup-dependencies:
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run: ls -al
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      - run: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+jobs:
+  build-development:
+    executor: node8
+
+    steps:
+      - setup-dependencies
+      - run: npm run build
+      - persist_to_workspace:
+          root: .
+          paths: .serverless
+
+  build-staging:
+    executor: node8
+
+    steps:
+      - setup-dependencies
+      - run: npm run build:staging
+      - persist_to_workspace:
+          root: .
+          paths: .serverless
+
+  build-production:
+    executor: node8
+
+    steps:
+      - setup-dependencies
+      - run: npm run build:prod
+      - persist_to_workspace:
+          root: .
+          paths: .serverless
+
+  deploy-development:
+    executor: node8
+
+    steps:
+      - deploy-setup-dependencies
+      - run:
+          command: node_modules/.bin/serverless deploy --verbose --stage development --region us-east-1 --package ./.serverless
+          environment:
+            SLS_DEBUG: "*"
+
+  deploy-staging:
+    executor: node8
+
+    steps:
+      - deploy-setup-dependencies
+      - run:
+          command: node_modules/.bin/serverless deploy --verbose --stage staging --region us-east-1 --package ./.serverless
+          environment:
+            SLS_DEBUG: "*"
+
+  deploy-demo:
+    executor: node8
+
+    steps:
+      - deploy-setup-dependencies
+      - run:
+          command: node_modules/.bin/serverless deploy --verbose --stage demo --region us-east-1 --package ./.serverless
+          environment:
+            SLS_DEBUG: "*"
+
+  deploy-production:
+    executor: node8
+
+    steps:
+      - deploy-setup-dependencies
+      - run:
+          command: node_modules/.bin/serverless deploy --verbose --stage production --region us-east-1 --package ./.serverless
+          environment:
+            SLS_DEBUG: "*"
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build-development:
+          filters:
+            branches:
+              only: master
+      - deploy-development:
+          requires:
+            - build-development
+          filters:
+            branches:
+              only: master
+
+      - build-staging:
+          requires:
+            - deploy-development
+          filters:
+            branches:
+              only: master
+      - deploy-staging:
+          requires:
+            - build-staging
+          filters:
+            branches:
+              only: master
+
+      - demo-gate:
+          type: approval
+          requires:
+            - deploy-staging
+          filters:
+            branches:
+              only: master
+      - build-demo:
+          requires:
+            - demo-gate
+          filters:
+            branches:
+              only: master
+      - deploy-demo:
+          requires:
+            - build-demo
+          filters:
+            branches:
+              only: master
+
+      - production-gate:
+          type: approval
+          requires:
+            - deploy-staging
+          filters:
+            branches:
+              only: master
+      - build-production:
+          requires:
+            - production-gate
+          filters:
+            branches:
+              only: master
+      - deploy-production:
+          requires:
+            - build-production
+          filters:
+            branches:
+              only: master
