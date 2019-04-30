@@ -9,7 +9,7 @@ const fail = (res, err) => {
       message: 'Sorry, something went wrong! Please try again later.',
     };
   }
-  
+
   return res.status(code).send(body);
 };
 

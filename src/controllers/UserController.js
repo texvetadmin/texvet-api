@@ -64,7 +64,7 @@ class UserController {
     try {
       const deleted = await this.userService.deleteUser(req);
       const response = makePaginatedResponse(req, deleted);
-      
+
       return res.status(204).json(response);
     } catch (err) {
       logger.error(`[${this.constructor.name}.updateUser] Error: ${err}`);

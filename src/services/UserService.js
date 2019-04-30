@@ -1,4 +1,4 @@
-import { pick } from 'lodash';
+import { pick, isNil } from 'lodash';
 import { isMongoId } from 'validator';
 
 import User from '../models/user';

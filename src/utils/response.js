@@ -32,7 +32,7 @@ export const makePaginatedResponse = (req, data, itemCount) => {
   if (isArray(data)) {
     return makeArray(req, data, itemCount);
   }
-  
+
   // must be object
   return makeObject(req, data);
 };
