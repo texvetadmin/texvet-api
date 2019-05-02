@@ -4,7 +4,7 @@ import NotificationType from '../models/notificationType';
 import logger from '../utils/logger';
 import { ApiError } from '../utils/errors';
 
-const typesFilters = ['_id', 'version'];
+const notificationTypesFilters = ['_id', 'version'];
 
 class NotificationTypeService {
   getTypes = async req => {
@@ -16,7 +16,7 @@ class NotificationTypeService {
 
       let query = {};
 
-      const filters = getListFilters(typesFilters, req);
+      const filters = getListFilters(notificationTypesFilters, req);
       if (filters.length) {
         query = { ...query, ...Object.assign(...filters) };
       }
@@ -98,7 +98,7 @@ class NotificationTypeService {
       const type = await NotificationType.findOne({ _id: id }).exec();
 
       if (!type) {
-        throw new ApiError({ message: '404 Type Not Found', statusCode: 404 });
+        throw new ApiError({ message: '404 Notification Type Not Found', statusCode: 404 });
       }
 
       type.set({ active: false, archived: true });
