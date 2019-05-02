@@ -8,7 +8,7 @@ import * as C from './constants';
 // this function creates the express app that is used both locally and in our
 // hosted environments, including production. Any changes you make here will
 // be reflected everywhere, so be careful.
-const makeApp = makeRoutesFunctions => {
+const createApp = routes => {
   const app = express();
 
   app.use(bodyParser.json());
@@ -37,11 +37,11 @@ const makeApp = makeRoutesFunctions => {
 
   app.use(helmet());
 
-  makeRoutesFunctions.forEach(makeRoutes => {
-    makeRoutes(app);
+  routes.forEach(route => {
+    route(app);
   });
 
   return app;
 };
 
-export default makeApp;
+export default createApp;

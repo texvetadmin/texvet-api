@@ -1,10 +1,9 @@
 /**
  * User controller
  */
-import fail from '../utils/fail';
 import logger from '../utils/logger';
 import userService from '../services/UserService';
-import { makeUpdatedResponse, makePaginatedResponse } from '../utils/response';
+import { makeUpdatedResponse, makePaginatedResponse, fail } from '../utils/response';
 
 class UserController {
   constructor() {
