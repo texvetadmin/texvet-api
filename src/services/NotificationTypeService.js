@@ -1,7 +1,6 @@
-import { isMongoId } from 'validator';
 import { isNil, pick } from 'lodash';
 import { getListFilters } from '../utils/filter';
-import Type from '../models/type';
+import NotificationType from '../models/notificationType';
 import logger from '../utils/logger';
 import { ApiError } from '../utils/errors';
 
@@ -21,14 +20,13 @@ class NotificationTypeService {
       if (filters.length) {
         query = { ...query, ...Object.assign(...filters) };
       }
-
       return Promise.all([
-        Type.find(query)
+        NotificationType.find(query)
           .limit(limit)
           .skip(skip)
           .sort(ordering)
           .exec(),
-        Type.count(query),
+        NotificationType.count(query),
       ]);
     } catch (err) {
       logger.error(`[${this.constructor.name}.getTypes] Error: ${err}`);
@@ -41,9 +39,8 @@ class NotificationTypeService {
       const {
         params: { id },
       } = req;
-      const query = isMongoId(id) ? { _id: id } : { externalId: id };
 
-      return Type.findOne(query);
+      return NotificationType.findOne({ _id: id });
     } catch (err) {
       logger.error(`[${this.constructor.name}.getType] Error: ${err}`);
       throw err;
@@ -60,7 +57,7 @@ class NotificationTypeService {
         'template_id',
       ]);
 
-      const type = new Type(data);
+      const type = new NotificationType(data);
       return type.save();
     } catch (err) {
       logger.error(`[${this.constructor.name}.createType] Error: ${err}`);
@@ -75,8 +72,7 @@ class NotificationTypeService {
         body: typeData,
       } = req;
 
-      const query = isMongoId(id) ? { _id: id } : { externalId: id };
-      const type = await Type.findOne(query).exec();
+      const type = await NotificationType.findOne({ _id: id }).exec();
 
       const { version: currentVersion } = type;
       const { version } = typeData;
@@ -99,7 +95,7 @@ class NotificationTypeService {
         params: { id },
       } = req;
 
-      const type = await Type.findOne({ externalId: id }).exec();
+      const type = await NotificationType.findOne({ _id: id }).exec();
 
       if (!type) {
         throw new ApiError({ message: '404 Type Not Found', statusCode: 404 });

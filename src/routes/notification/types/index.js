@@ -4,9 +4,6 @@ import NotificationTypeController from '../../../controllers/NotificationTypeCon
 const router = express.Router();
 
 router.get('/', NotificationTypeController.getTypes);
-router.get('/:id', NotificationTypeController.getTypes);
-router.post('/', NotificationTypeController.createType);
-router.put('/:id', NotificationTypeController.updateType);
-router.delete('/:id', NotificationTypeController.deleteType);
+router.get('/:id', NotificationTypeController.getType);
 
 export default router;

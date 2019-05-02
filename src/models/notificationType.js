@@ -1,10 +1,10 @@
 /**
- * Type model
+ * NotificationType model
  */
 
 import mongoose from 'mongoose';
 
-const TypeSchema = new mongoose.Schema(
+const NotificationTypeSchema = new mongoose.Schema(
   {
     code: {
       type: String,
@@ -26,7 +26,7 @@ const TypeSchema = new mongoose.Schema(
 );
 
 // Increment the version number before we save to the datastore.
-TypeSchema.pre('save', function preSave(next) {
+NotificationTypeSchema.pre('save', function preSave(next) {
   this.increment();
   next();
 });
@@ -34,11 +34,11 @@ let model;
 
 // try to get schema, and if it doesn't exist, establish it.
 try {
-  model = mongoose.model('Type');
+  model = mongoose.model('NotificationType');
 } catch (error) {
-  model = mongoose.model('Type', TypeSchema);
+  model = mongoose.model('NotificationType', NotificationTypeSchema);
 }
 
-const typeSchema = model;
+const notificationTypeSchema = model;
 
-export default typeSchema;
+export default notificationTypeSchema;

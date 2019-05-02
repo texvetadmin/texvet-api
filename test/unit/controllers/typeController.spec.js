@@ -6,7 +6,7 @@ import proxyquire from 'proxyquire';
 import makeControllerMocks from '../../helpers/makeControllerMocks';
 import makeResponseMock from '../../helpers/makeResponseMock';
 
-describe('Type Controller Test', () => {
+describe('NotificationType Controller Test', () => {
   let sandbox, mocks, notificationTypeController, res, req, next;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
