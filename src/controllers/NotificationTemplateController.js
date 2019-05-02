@@ -1,18 +1,18 @@
 import fail from '../utils/fail';
 import logger from '../utils/logger';
-import templateService from '../services/TemplateService';
+import notificationTemplateService from '../services/NotificationTemplateService';
 
 import { makePaginatedResponse } from '../utils/response';
 
 
-class TemplateController {
+class NotificationTemplateController {
   constructor() {
-    this.templateService = templateService;
+    this.notificationTemplateService = notificationTemplateService;
   }
 
   getTemplates = async (req, res) => {
     try {
-      const [templates, itemCount] = await this.templateService.getTemplates(req);
+      const [templates, itemCount] = await this.notificationTemplateService.getTemplates(req);
       const response = makePaginatedResponse(req, templates, itemCount);
 
       return res.status(200).json(response);
@@ -24,7 +24,7 @@ class TemplateController {
 
   getTemplate = async (req, res) => {
     try {
-      const template = await this.templateService.getTemplate(req);
+      const template = await this.notificationTemplateService.getTemplate(req);
       const response = makePaginatedResponse(req, template);
 
       return res.status(200).json(response);
@@ -35,4 +35,4 @@ class TemplateController {
   };
 }
 
-export default new TemplateController();
+export default new NotificationTemplateController();

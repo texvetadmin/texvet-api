@@ -6,13 +6,13 @@ import proxyquire from 'proxyquire';
 import makeControllerMocks from '../../helpers/makeControllerMocks';
 import makeResponseMock from '../../helpers/makeResponseMock';
 
-describe('Template Controller Test', () => {
-  let sandbox, mocks, templateController, res, req, next;
+describe('NotificationTemplate Controller Test', () => {
+  let sandbox, mocks, notificationTemplateController, res, req, next;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     res = makeResponseMock(sandbox);
     mocks = makeControllerMocks(sandbox);
-    templateController = proxyquire('../../../src/controllers/TemplateController', mocks).default;
+    notificationTemplateController = proxyquire('../../../src/controllers/NotificationTemplateController', mocks).default;
   });
 
   afterEach(() => {
@@ -35,12 +35,12 @@ describe('Template Controller Test', () => {
         query: { skip: 0, limit: 10 },
       };
 
-      templateController.templateService.getTemplates.resolves([templates, templateCount]);
+      notificationTemplateController.notificationTemplateService.getTemplates.resolves([templates, templateCount]);
     });
 
-    it('should call templateService.getTemplates with the expected arguments', async () => {
+    it('should call notificationTemplateService.getTemplates with the expected arguments', async () => {
       // Act
-      const response = await templateController.getTemplates(req, res, next);
+      const response = await notificationTemplateController.getTemplates(req, res, next);
       // Assert
 
       //TODO except cases

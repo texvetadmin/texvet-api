@@ -1,12 +1,12 @@
 import { isMongoId } from 'validator';
 import { getListFilters } from '../utils/filter';
-import Template from '../models/template';
+import NotificationTemplate from '../models/notificationTemplate';
 
 import logger from '../utils/logger';
 
-const templateFilters = ['_id', 'version'];
+const notificationTemplateFilters = ['_id', 'version'];
 
-class TemplateService {
+class NotificationTemplateService {
   getTemplates = async req => {
     try {
       const {
@@ -16,18 +16,18 @@ class TemplateService {
 
       let query = {};
 
-      const filters = getListFilters(templateFilters, req);
+      const filters = getListFilters(notificationTemplateFilters, req);
       if (filters.length) {
         query = { ...query, ...Object.assign(...filters) };
       }
 
       return Promise.all([
-        Template.find(query)
+        NotificationTemplate.find(query)
           .limit(limit)
           .skip(skip)
           .sort(ordering)
           .exec(),
-        Template.count(query),
+        NotificationTemplate.count(query),
       ]);
     } catch (err) {
       logger.error(`[${this.constructor.name}.getTemplates] Error: ${err}`);
@@ -42,7 +42,7 @@ class TemplateService {
       } = req;
       const query = isMongoId(id) ? { _id: id } : { externalId: id };
 
-      return Template.findOne(query);
+      return NotificationTemplate.findOne(query);
     } catch (err) {
       logger.error(`[${this.constructor.name}.getTemplate] Error: ${err}`);
       throw err;
@@ -50,4 +50,4 @@ class TemplateService {
   };
 }
 
-export default new TemplateService();
+export default new NotificationTemplateService();

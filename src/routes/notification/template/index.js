@@ -1,9 +1,9 @@
 import express from 'express';
-import TemplateController from '../../../controllers/TemplateController';
+import NotificationTemplateController from '../../../controllers/NotificationTemplateController';
 
 const router = express.Router();
 
-router.get('/', TemplateController.getTemplates);
-router.get('/:id', TemplateController.getTemplate);
+router.get('/', NotificationTemplateController.getTemplates);
+router.get('/:id', NotificationTemplateController.getTemplate);
 
 export default router;
