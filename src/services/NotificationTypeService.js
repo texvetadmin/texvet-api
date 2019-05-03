@@ -40,7 +40,7 @@ class NotificationTypeService {
         params: { id },
       } = req;
 
-      return NotificationType.findOne({ _id: id });
+      return NotificationType.findById(id);
     } catch (err) {
       logger.error(`[${this.constructor.name}.getType] Error: ${err}`);
       throw err;
@@ -72,7 +72,7 @@ class NotificationTypeService {
         body: typeData,
       } = req;
 
-      const type = await NotificationType.findOne({ _id: id }).exec();
+      const type = await NotificationType.findById(id).exec();
 
       const { version: currentVersion } = type;
       const { version } = typeData;
@@ -95,7 +95,7 @@ class NotificationTypeService {
         params: { id },
       } = req;
 
-      const type = await NotificationType.findOne({ _id: id }).exec();
+      const type = await NotificationType.findById(id).exec();
 
       if (!type) {
         throw new ApiError({ message: '404 Notification Type Not Found', statusCode: 404 });
