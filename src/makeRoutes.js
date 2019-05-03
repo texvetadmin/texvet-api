@@ -1,6 +1,6 @@
 import userRouter from './routes/user';
+import fulfilmentsAuthRouter from './routes/fulfilments/auth';
 import userAuthRouter from './routes/user/auth';
-import EmailController from './controllers/EmailController';
 
 const makeRoutes = app => {
   // public routes
@@ -8,7 +8,7 @@ const makeRoutes = app => {
 
   // authenticated routes
   app.use('/auth/v1/users', userAuthRouter);
-  app.post('/auth/v1/fulfilments/send-email', EmailController.sendEmail);
+  app.post('/auth/v1/fulfilments', fulfilmentsAuthRouter);
 };
 
 export default makeRoutes;
