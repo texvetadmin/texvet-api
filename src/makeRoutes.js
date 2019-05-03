@@ -1,5 +1,6 @@
 import userRouter from './routes/user';
 import userAuthRouter from './routes/user/auth';
+import fulfilmentsAuthRouter from './routes/fulfilments/auth';
 
 const makeRoutes = app => {
   // public routes
@@ -7,6 +8,7 @@ const makeRoutes = app => {
 
   // authenticated routes
   app.use('/auth/v1/users', userAuthRouter);
+  app.post('/auth/v1/fulfilments', fulfilmentsAuthRouter);
 };
 
 export default makeRoutes;
