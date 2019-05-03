@@ -1,18 +1,17 @@
 import userRouter from './routes/user';
+import typeRouter from './routes/notification/type';
 import userAuthRouter from './routes/user/auth';
-import NotificationTypeController from './controllers/NotificationTypeController';
+import typeAuthRouter from './routes/notification/type/auth';
 
 const makeRoutes = app => {
   // public routes
   app.use('/public/v1/users', userRouter);
-  app.get('/public/v1/notifications/types', NotificationTypeController.getTypes);
-  app.get('/public/v1/notifications/types/:id', NotificationTypeController.getType);
+  app.use('/public/v1/notifications/types', typeRouter);
+
 
   // authenticated routes
   app.use('/auth/v1/users', userAuthRouter);
-  app.post('/auth/v1/notifications/types', NotificationTypeController.createType);
-  app.put('/auth/v1/notifications/types/:id', NotificationTypeController.updateType);
-  app.delete('/auth/v1/notifications/types/:id', NotificationTypeController.deleteType);
+  app.use('/auth/v1/notifications/types', typeAuthRouter);
 };
 
 export default makeRoutes;
