@@ -10,7 +10,7 @@ class EmailController {
 
   sendEmail = async (req, res) => {
     try {
-      const info = await this.emailService.sendEmail(req);
+      const info = this.emailService.sendEmail(req);
       return success(res, info);
     } catch (err) {
       logger.error(`[${this.constructor.name}.sendEmail] Error: ${err}`);
