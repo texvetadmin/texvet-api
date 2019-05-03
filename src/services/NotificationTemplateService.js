@@ -1,4 +1,3 @@
-import { isMongoId } from 'validator';
 import { getListFilters } from '../utils/filter';
 import NotificationTemplate from '../models/notificationTemplate';
 
@@ -40,9 +39,8 @@ class NotificationTemplateService {
       const {
         params: { id },
       } = req;
-      const query = isMongoId(id) ? { _id: id } : { externalId: id };
 
-      return NotificationTemplate.findOne(query);
+      return NotificationTemplate.findById(id);
     } catch (err) {
       logger.error(`[${this.constructor.name}.getTemplate] Error: ${err}`);
       throw err;
