@@ -1,13 +1,11 @@
 import userRouter from './routes/user';
+import templateRouter from './routes/notification/template';
 import userAuthRouter from './routes/user/auth';
-import NotificationTemplateController from './controllers/NotificationTemplateController';
-
 
 const makeRoutes = app => {
   // public routes
   app.use('/public/v1/users', userRouter);
-  app.get('/public/v1/notifications/templates', NotificationTemplateController.getTemplates);
-  app.get('/public/v1/notifications/templates/:id', NotificationTemplateController.getTemplate);
+  app.use('/public/v1/notifications/templates', templateRouter);
 
   // authenticated routes
   app.use('/auth/v1/users', userAuthRouter);
