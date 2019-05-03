@@ -55,9 +55,9 @@ resources:
       Properties:
         QueueName: ${self:provider.environment.GENERATE_EMAIL_QUEUE_NAME}
     DeliverEmailQueue:
-      Type: "AWS::SQS::Queue"
-      Properties:
-        QueueName: ${self:provider.environment.DELIVER_EMAIL_QUEUE_NAME}
+          Type: "AWS::SQS::Queue"
+          Properties:
+            QueueName: ${self:provider.environment.DELIVER_EMAIL_QUEUE_NAME}
 
 functions:
   # API Functions
@@ -79,6 +79,7 @@ functions:
           path: /public/{any+} # this matches any path. The token 'any' doesn't mean anything special
           method: ANY
           cors: true
+          
   generateEmail :
     handler: src/lambda.generateEmail
     path: fulfilments/generate-email

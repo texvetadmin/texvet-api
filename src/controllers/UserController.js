@@ -1,9 +1,9 @@
 /**
  * User controller
  */
-import fail from '../utils/fail';
 import logger from '../utils/logger';
 import userService from '../services/UserService';
+import fail from '../utils/fail';
 import { makeUpdatedResponse, makePaginatedResponse } from '../utils/response';
 
 class UserController {
