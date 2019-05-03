@@ -3,7 +3,8 @@
  */
 import logger from '../utils/logger';
 import userService from '../services/UserService';
-import { makeUpdatedResponse, makePaginatedResponse, fail } from '../utils/response';
+import fail from '../utils/fail';
+import { makeUpdatedResponse, makePaginatedResponse } from '../utils/response';
 
 class UserController {
   constructor() {

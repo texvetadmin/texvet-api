@@ -3,7 +3,7 @@ import emailRouter from './routes/email';
 import userAuthRouter from './routes/user/auth';
 import EmailController from './controllers/EmailController';
 
-const routes = app => {
+const makeRoutes = app => {
   // public routes
   app.use('/public/v1/users', userRouter);
   app.use('/public/v1', emailRouter);
@@ -13,4 +13,4 @@ const routes = app => {
   app.use('/auth/v1/fulfilments/send-email', EmailController.sendEmail);
 };
 
-export default routes;
+export default makeRoutes;

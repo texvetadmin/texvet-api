@@ -1,6 +1,7 @@
 import emailService from '../services/EmailService';
 import logger from '../utils/logger';
-import { fail, success } from '../utils/response';
+import fail from '../utils/fail';
+import { success } from '../utils/response';
 
 class EmailController {
   constructor() {

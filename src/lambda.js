@@ -1,11 +1,11 @@
 /* eslint-disable no-param-reassign */
 
 import serverless from 'serverless-http';
-import createApp from './createApp';
-import routes from './routes';
+import makeApp from './makeApp';
+import makeRoutes from './makeRoutes';
 
 // make the server
-const app = createApp([routes]);
+const app = makeApp([makeRoutes]);
 
 const handler = serverless(app, {
   request: (request, event, context) => {

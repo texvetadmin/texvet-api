@@ -1,4 +1,4 @@
-import { get, isArray } from 'lodash';
+import { isArray } from 'lodash';
 
 export const makeUpdatedResponse = (original, updated) => ({
   data: {
@@ -41,16 +41,3 @@ export const success = (res, message = '', code = 200) => res.status(code).send(
   statusCode: code,
   message,
 });
-
-export const fail = (res, err) => {
-  let body = get(err, 'body') || get(err, 'message') || err;
-  const code = get(err, 'statusCode') || get(err, 'code') || 500;
-
-  if (code === 500) {
-    body = {
-      message: 'Sorry, something went wrong! Please try again later.',
-    };
-  }
-
-  return res.status(code).send(body);
-};
