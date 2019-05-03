@@ -40,6 +40,24 @@ provider:
   memorySize: 1024
   timeout: 30
   environment: ${file(env.yml):${self:custom.stage}, file(env.yml):${self:custom.defaultStage}}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "sqs:SendMessage"
+        - "sqs:GetQueueUrl"
+        - "sqs:ListQueues"
+      Resource: "arn:aws:sqs:${self:provider.region}:*:GenerateEmailQueue"
+
+resources:
+  Resources:
+    GenerateEmailQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: ${self:provider.environment.GENERATE_EMAIL_QUEUE_NAME}
+    DeliverEmailQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: ${self:provider.environment.DELIVER_EMAIL_QUEUE_NAME}
 
 functions:
   # API Functions
@@ -61,3 +79,16 @@ functions:
           path: /public/{any+} # this matches any path. The token 'any' doesn't mean anything special
           method: ANY
           cors: true
+  generateEmail :
+    handler: src/lambda.generateEmail
+    path: fulfilments/generate-email
+    method: get
+    warmup: true
+    cors: true
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - DeliverEmailQueue
+              - Arn
+
