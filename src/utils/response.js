@@ -36,3 +36,8 @@ export const makePaginatedResponse = (req, data, itemCount) => {
   // must be object
   return makeObject(req, data);
 };
+
+export const success = (res, message = '', code = 200) => res.status(code).send({
+  statusCode: code,
+  message,
+});

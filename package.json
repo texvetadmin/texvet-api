@@ -26,6 +26,7 @@
   "private": true,
   "dependencies": {
     "@babel/runtime": "7.0.*",
+    "@sendgrid/mail": "^6.3.1",
     "aws-sdk": "2.355.*",
     "body-parser": "1.18.*",
     "chalk": "2.4.*",
