@@ -5,5 +5,4 @@ const router = express.Router();
 
 router.post('/send-email', EmailController.sendEmail);
 
-
 export default router;

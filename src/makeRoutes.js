@@ -1,4 +1,5 @@
 import userRouter from './routes/user';
+import fulfilmentsAuthRouter from './routes/fulfilments/auth';
 import userAuthRouter from './routes/user/auth';
 import fulfilmentsAuthRouter from './routes/fulfilments/auth';
 
