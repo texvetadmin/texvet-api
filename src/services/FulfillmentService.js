@@ -1,7 +1,7 @@
 import logger from '../utils/logger';
 import staticResources from '../models/staticResources';
 
-class EmailService {
+class FulfillmentService {
   getStaticResourcesBySlug = async req => {
     try {
       const {
@@ -16,4 +16,4 @@ class EmailService {
   };
 }
 
-export default new EmailService();
+export default new FulfillmentService();
