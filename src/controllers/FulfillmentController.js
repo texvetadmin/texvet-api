@@ -17,7 +17,7 @@ class FulfillmentController {
       return fail(res, err);
     }
   };
-     
+
   getOrganizationBySlug = async (req, res) => {
     try {
       const info = this.fulfillmentService.getOrganizationBySlug(req);
