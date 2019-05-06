@@ -48,30 +48,35 @@ const deliverEmail = (event, context, callback) => {
 
 const generateEmail = async (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
-  const type = await NotificationTypeModel
-    .findOne({ code: JSON.parse(event.Records[0].body).type })
-    .exec();
-  const template = await NotificationTemplateModel
-    .findOne({ _id: mongoose.Types.ObjectId(type.template_id) })
-    .exec();
 
-  const params = {
-    MessageBody: {
-      subject: '',
-      message: JSON.parse(event.Records[0].body).text,
-      template,
-    },
-    QueueUrl: QUEUE_URL,
-  };
+  try {
+    const type = await NotificationTypeModel
+      .findOne({ code: JSON.parse(event.Records[0].body).type })
+      .exec();
+    const template = await NotificationTemplateModel
+      .findOne({ _id: mongoose.Types.ObjectId(type.template_id) })
+      .exec();
 
-  sqs.sendMessage(params, (err, data) => {
-    if (err) {
-      logger.error(`[${this.constructor.name}.generateEmail] Error: ${err}`);
-      callback(err);
-    } else {
-      callback(null, data);
-    }
-  });
+    const params = {
+      MessageBody: {
+        subject: '',
+        message: JSON.parse(event.Records[0].body).text,
+        template,
+      },
+      QueueUrl: QUEUE_URL,
+    };
+
+    sqs.sendMessage(params, (err, data) => {
+      if (err) {
+        logger.error(`[${this.constructor.name}.generateEmail.sendMessage] Error: ${err}`);
+        callback(err);
+      } else {
+        callback(null, data);
+      }
+    });
+  } catch (err) {
+    logger.error(`[${this.constructor.name}.generateEmail] Error: ${err}`);
+  }
 };
 
 // eslint-disable-next-line import/prefer-default-export
