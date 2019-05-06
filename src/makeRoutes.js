@@ -11,13 +11,13 @@ const makeRoutes = app => {
   app.use('/public/v1/users', userRouter);
   app.use('/public/v1/notifications/types', typeRouter);
   app.use('/public/v1/notifications/templates', templateRouter);
-  app.use('/public/v1//fulfillment', fulfilmentRouter);
+  app.use('/public/v1//fulfillments', fulfilmentRouter);
 
 
   // authenticated routes
   app.use('/auth/v1/users', userAuthRouter);
   app.use('/auth/v1/notifications/types', typeAuthRouter);
-  app.post('/auth/v1/fulfilment', fulfilmentAuthRouter);
+  app.post('/auth/v1/fulfillments', fulfilmentAuthRouter);
 };
 
 export default makeRoutes;
