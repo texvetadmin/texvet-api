@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import logger from '../utils/logger';
 import staticResources from '../models/staticResources';
 import referrals from '../../seed/data/collections/referral/data';
