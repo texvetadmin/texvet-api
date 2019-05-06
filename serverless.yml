@@ -56,8 +56,8 @@ resources:
         QueueName: ${self:provider.environment.GENERATE_EMAIL_QUEUE_NAME}
     DeliverEmailQueue:
       Type: "AWS::SQS::Queue"
-                Properties:
-                  QueueName: ${self:provider.environment.DELIVER_EMAIL_QUEUE_NAME}
+      Properties:
+        QueueName: ${self:provider.environment.DELIVER_EMAIL_QUEUE_NAME}
 
 functions:
   # API Functions

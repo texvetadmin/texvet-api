@@ -75,6 +75,7 @@ const generateEmail = async (event, context, callback) => {
     });
   } catch (err) {
     logger.error(`[${this.constructor.name}.generateEmail] Error: ${err}`);
+    callback(err);
   }
 };
 

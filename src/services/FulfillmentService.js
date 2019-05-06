@@ -1,8 +1,22 @@
 import logger from '../utils/logger';
+import staticResources from '../models/staticResources';
 import referrals from '../../seed/data/collections/referral/data';
 import organizations from '../../seed/data/collections/organization/data';
 
 class FulfillmentService {
+  getStaticResourcesBySlug = async req => {
+    try {
+      const {
+        params: { slug },
+      } = req;
+
+      return staticResources.findOne({ slug });
+    } catch (err) {
+      logger.error(`[${this.constructor.name}.getStaticResourcesBySlug] Error: ${err}`);
+      throw err;
+    }
+  };
+
   getOrganizationBySlug = async req => {
     try {
       const {
@@ -10,7 +24,7 @@ class FulfillmentService {
         body: { type, value },
       } = req;
 
-      //todo get items by slug,type and value
+      // TODO: get items by slug,type and value
 
       return organizations;
     } catch (err) {
@@ -26,7 +40,7 @@ class FulfillmentService {
         body: { type, value },
       } = req;
 
-      //todo get items by slug,type and value
+      // TODO: get items by slug,type and value
 
       return referrals;
     } catch (err) {
