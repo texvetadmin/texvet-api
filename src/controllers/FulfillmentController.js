@@ -8,6 +8,16 @@ class FulfillmentController {
     this.fulfillmentService = fulfillmentService;
   }
 
+  getReferralsBySlug = async (req, res) => {
+    try {
+      const info = this.fulfillmentService.getReferralsBySlug(req);
+      return success(res, info);
+    } catch (err) {
+      logger.error(`[${this.constructor.name}.getReferralsBySlug] Error: ${err}`);
+      return fail(res, err);
+    }
+  };
+     
   getOrganizationBySlug = async (req, res) => {
     try {
       const info = this.fulfillmentService.getOrganizationBySlug(req);
