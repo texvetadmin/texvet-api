@@ -3,8 +3,8 @@ import typeRouter from './routes/notification/type';
 import templateRouter from './routes/notification/template';
 import userAuthRouter from './routes/user/auth';
 import typeAuthRouter from './routes/notification/type/auth';
-import fulfilmentRouter from './routes/fulfilment';
-import fulfilmentAuthRouter from './routes/fulfilment/auth';
+import fulfilmentRouter from './routes/fulfillment';
+import fulfilmentAuthRouter from './routes/fulfillment/auth';
 
 const makeRoutes = app => {
   // public routes
