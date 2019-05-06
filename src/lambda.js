@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 import AWS from 'aws-sdk';
 import mongoose from 'mongoose';
+import Mustache from 'mustache';
 import sgMail from '@sendgrid/mail';
 import serverless from 'serverless-http';
 import makeApp from './makeApp';
@@ -56,12 +57,10 @@ const generateEmail = async (event, context, callback) => {
     const template = await NotificationTemplateModel
       .findOne({ _id: mongoose.Types.ObjectId(type.template_id) })
       .exec();
-
     const params = {
       MessageBody: {
         subject: '',
-        message: JSON.parse(event.Records[0].body).text,
-        template,
+        message: Mustache.render(template, { message: JSON.parse(event.Records[0].body).text }),
       },
       QueueUrl: QUEUE_URL,
     };
