@@ -1,10 +1,14 @@
 /* eslint-disable no-param-reassign */
 import AWS from 'aws-sdk';
+import mongoose from 'mongoose';
+import Mustache from 'mustache';
 import sgMail from '@sendgrid/mail';
 import serverless from 'serverless-http';
 import makeApp from './makeApp';
 import makeRoutes from './makeRoutes';
 import logger from './utils/logger';
+import NotificationTypeModel from './models/notificationType';
+import NotificationTemplateModel from './models/notificationTemplate';
 
 // make the server
 const app = makeApp([makeRoutes]);
@@ -43,13 +47,19 @@ const deliverEmail = (event, context, callback) => {
   }
 };
 
-const generateEmail = (event, context, callback) => {
+const generateEmail = async (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
+  const type = await NotificationTypeModel
+    .findOne({ code: JSON.parse(event.Records[0].body).type })
+    .exec();
+  const template = await NotificationTemplateModel
+    .findOne({ _id: mongoose.Types.ObjectId(type.template_id) })
+    .exec();
 
   const params = {
     MessageBody: {
       subject: '',
-      message: JSON.parse(event.Records[0].body).text,
+      message: Mustache.render(template, { message: JSON.parse(event.Records[0].body).text }),
     },
     QueueUrl: QUEUE_URL,
   };
@@ -66,4 +76,3 @@ const generateEmail = (event, context, callback) => {
 
 // eslint-disable-next-line import/prefer-default-export
 export { handler, generateEmail, deliverEmail };
-

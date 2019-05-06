@@ -8,12 +8,22 @@ class FulfillmentController {
     this.fulfillmentService = fulfillmentService;
   }
 
-  getStaticResourcesBySlug = async (req, res) => {
+  getReferralsBySlug = async (req, res) => {
     try {
-      const info = this.fulfillmentService.getStaticResourcesBySlug(req);
+      const info = this.fulfillmentService.getReferralsBySlug(req);
       return success(res, info);
     } catch (err) {
-      logger.error(`[${this.constructor.name}.getStaticResourcesBySlug] Error: ${err}`);
+      logger.error(`[${this.constructor.name}.getReferralsBySlug] Error: ${err}`);
+      return fail(res, err);
+    }
+  };
+
+  getOrganizationBySlug = async (req, res) => {
+    try {
+      const info = this.fulfillmentService.getOrganizationBySlug(req);
+      return success(res, info);
+    } catch (err) {
+      logger.error(`[${this.constructor.name}.getOrganizationBySlug] Error: ${err}`);
       return fail(res, err);
     }
   };
