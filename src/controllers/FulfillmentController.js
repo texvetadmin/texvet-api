@@ -8,12 +8,22 @@ class FulfillmentController {
     this.fulfillmentService = fulfillmentService;
   }
 
-  getStaticResourcesBySlug = async (req, res) => {
+  getResourcesBySlug = async (req, res) => {
     try {
-      const info = await this.fulfillmentService.getStaticResourcesBySlug(req);
+      const info = await this.fulfillmentService.getResourcesBySlug(req);
       return success(res, info);
     } catch (err) {
-      logger.error(`[${this.constructor.name}.getStaticResourcesBySlug] Error: ${err}`);
+      logger.error(`[${this.constructor.name}.getResourcesBySlug] Error: ${err}`);
+      return fail(res, err);
+    }
+  };
+
+  getServicesBySlug = async (req, res) => {
+    try {
+      const info = await this.fulfillmentService.getServicesBySlug(req);
+      return success(res, info);
+    } catch (err) {
+      logger.error(`[${this.constructor.name}.getServicesBySlug] Error: ${err}`);
       return fail(res, err);
     }
   };
@@ -24,16 +34,6 @@ class FulfillmentController {
       return success(res, info);
     } catch (err) {
       logger.error(`[${this.constructor.name}.getReferralsBySlug] Error: ${err}`);
-      return fail(res, err);
-    }
-  };
-
-  getOrganizationBySlug = async (req, res) => {
-    try {
-      const info = await this.fulfillmentService.getOrganizationBySlug(req);
-      return success(res, info);
-    } catch (err) {
-      logger.error(`[${this.constructor.name}.getOrganizationBySlug] Error: ${err}`);
       return fail(res, err);
     }
   };

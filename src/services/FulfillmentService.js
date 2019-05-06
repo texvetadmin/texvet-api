@@ -4,7 +4,7 @@ import referrals from '../../seed/data/collections/referral/data';
 import organizations from '../../seed/data/collections/organization/data';
 
 class FulfillmentService {
-  getStaticResourcesBySlug = async req => {
+  getResourcesBySlug = async req => {
     try {
       const {
         params: { slug },
@@ -12,12 +12,12 @@ class FulfillmentService {
 
       return staticResources.findOne({ slug });
     } catch (err) {
-      logger.error(`[${this.constructor.name}.getStaticResourcesBySlug] Error: ${err}`);
+      logger.error(`[${this.constructor.name}.getResourcesBySlug] Error: ${err}`);
       throw err;
     }
   };
 
-  getOrganizationBySlug = async req => {
+  getServicesBySlug = async req => {
     try {
       const {
         params: { slug },
@@ -28,7 +28,7 @@ class FulfillmentService {
 
       return organizations;
     } catch (err) {
-      logger.error(`[${this.constructor.name}.getOrganizationBySlug] Error: ${err}`);
+      logger.error(`[${this.constructor.name}.getServicesBySlug] Error: ${err}`);
       throw err;
     }
   };
