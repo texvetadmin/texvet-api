@@ -4,7 +4,7 @@
   "description": "The main API for the texvet.io application.",
   "main": "",
   "scripts": {
-    "build": "sls package --stage dev",
+    "build": "sls package --stage development",
     "build:demo": "sls package --stage demo",
     "build:prod": "sls package --stage production",
     "build:staging": "sls package --stage staging",
