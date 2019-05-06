@@ -17,6 +17,16 @@ class FulfillmentController {
       return fail(res, err);
     }
   };
+     
+  getOrganizationBySlug = async (req, res) => {
+    try {
+      const info = this.fulfillmentService.getOrganizationBySlug(req);
+      return success(res, info);
+    } catch (err) {
+      logger.error(`[${this.constructor.name}.getOrganizationBySlug] Error: ${err}`);
+      return fail(res, err);
+    }
+  };
 }
 
 export default new FulfillmentController();

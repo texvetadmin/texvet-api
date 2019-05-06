@@ -39,6 +39,6 @@ try {
   model = mongoose.model('NotificationType', NotificationTypeSchema);
 }
 
-const notificationTypeSchema = model;
+const NotificationTypeModel = model;
 
-export default notificationTypeSchema;
+export default NotificationTypeModel;
