@@ -81,7 +81,7 @@ functions:
           cors: true
 
   deliverEmail:
-    handler: src/lambda.deliverEmail
+    handler: src/handlers/SQS/index.deliverEmail
     path: fulfilments/deliver-email
     method: get
     warmup: true
@@ -94,7 +94,7 @@ functions:
               - Arn
               
   generateEmail:
-    handler: src/lambda.generateEmail
+    handler: src/handlers/SQS/index.generateEmail
     path: fulfilments/generate-email
     method: get
     warmup: true
