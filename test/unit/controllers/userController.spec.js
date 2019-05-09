@@ -3,7 +3,6 @@ import chai, { expect } from 'chai';
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
 
-import makeControllerMocks from '../../helpers/makeControllerMocks';
 import makeResponseMock from '../../helpers/makeResponseMock';
 
 describe('User Controller Test', () => {
@@ -11,7 +10,15 @@ describe('User Controller Test', () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     res = makeResponseMock(sandbox);
-    mocks = makeControllerMocks(sandbox);
+    mocks = {
+      '../services/UserService': {
+        getUsers: sandbox.stub().returns([]),
+        getUser: sandbox.stub().returns({}),
+        createUser: sandbox.stub().returns({}),
+        updateUser: sandbox.stub().returns({}),
+        '@noCallThru': true,
+      },
+    };
     userController = proxyquire('../../../src/controllers/UserController', mocks).default;
   });
 
@@ -41,8 +48,8 @@ describe('User Controller Test', () => {
       await userController.getUsers(req, res, next);
 
       // Assert
-      expect(userController.userService.getManyUsers.callCount).to.be.equal(1);
-      expect(userController.userService.getManyUsers.args[0][0]).to.deep.equal(req);
+      expect(userController.userService.getUsers.callCount).to.be.equal(1);
+      expect(userController.userService.getUsers.args[0][0]).to.deep.equal(req);
     });
 
     it('should return an object with the expected properties', async () => {

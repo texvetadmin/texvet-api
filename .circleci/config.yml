@@ -43,6 +43,7 @@ jobs:
 
     steps:
       - setup-dependencies
+      - run: npm run test:unit
       - run: npm run build
       - persist_to_workspace:
           root: .

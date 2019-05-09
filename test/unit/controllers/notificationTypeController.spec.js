@@ -3,7 +3,6 @@ import chai, { expect } from 'chai';
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
 
-import makeControllerMocks from '../../helpers/makeControllerMocks';
 import makeResponseMock from '../../helpers/makeResponseMock';
 
 describe('NotificationType Controller Test', () => {
@@ -11,7 +10,16 @@ describe('NotificationType Controller Test', () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     res = makeResponseMock(sandbox);
-    mocks = makeControllerMocks(sandbox);
+    mocks = {
+      '../services/NotificationTypeService': {
+        getTypes: sandbox.stub().returns([]),
+        getType: sandbox.stub().returns({}),
+        createType: sandbox.stub().returns({}),
+        updateType: sandbox.stub().returns({}),
+        deleteType: sandbox.stub().returns({}),
+        '@noCallThru': true,
+      },
+    };
     notificationTypeController = proxyquire('../../../src/controllers/NotificationTypeController', mocks).default;
   });
 

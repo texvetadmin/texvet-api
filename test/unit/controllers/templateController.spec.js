@@ -3,7 +3,6 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
 
-import makeControllerMocks from '../../helpers/makeControllerMocks';
 import makeResponseMock from '../../helpers/makeResponseMock';
 
 describe('NotificationTemplate Controller Test', () => {
@@ -11,7 +10,13 @@ describe('NotificationTemplate Controller Test', () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     res = makeResponseMock(sandbox);
-    mocks = makeControllerMocks(sandbox);
+    mocks = {
+      '../services/NotificationTemplateService': {
+        getTemplates: sandbox.stub().returns([]),
+        getTemplate: sandbox.stub().returns({}),
+        '@noCallThru': true,
+      },
+    };
     notificationTemplateController = proxyquire('../../../src/controllers/NotificationTemplateController', mocks).default;
   });
 
