@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 import logger from '../utils/logger';
 import staticResources from '../models/staticResources';
-import referrals from '../../seed/data/collections/referral/data';
-import organizations from '../../seed/data/collections/organization/data';
+import referrals from '../../collections/referral/data';
+import organizations from '../../collections/organization/data';
 
 class FulfillmentService {
   getResourcesBySlug = async req => {
