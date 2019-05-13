@@ -3,7 +3,7 @@
 process.env.DEBUG = 'mongo-seeding'; // https://www.npmjs.com/package/mongo-seeding#debug-output
 const { Seeder } = require('mongo-seeding');
 const path = require('path');
-require('../config');
+require('./config');
 
 const collectionsPath = path.resolve(__dirname, 'collections');
 
