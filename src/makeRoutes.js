@@ -11,11 +11,13 @@ const makeRoutes = app => {
   app.use('/public/v1/users', userRouter);
   app.use('/public/v1/notifications/types', typeRouter);
   app.use('/public/v1/notifications/templates', templateRouter);
+  app.use('/public/v1/follow-ups', templateRouter);
   app.use('/public/v1/fulfillments', fulfillmentRouter);
 
   // authenticated routes
   app.use('/auth/v1/users', userAuthRouter);
   app.use('/auth/v1/notifications/types', typeAuthRouter);
+  app.use('/auth/v1/notifications/', typeAuthRouter);
   app.use('/auth/v1/fulfillments', fulfillmentAuthRouter);
 };
 
