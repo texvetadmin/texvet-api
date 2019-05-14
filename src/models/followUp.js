@@ -11,7 +11,7 @@ const FollowUpSchema = new mongoose.Schema(
       type: String,
     },
     recipients: [RecipientSchema],
-    notificationTypeId: {
+    notification_type_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'NotificationType',
     },
