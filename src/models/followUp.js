@@ -7,9 +7,6 @@ import { RecipientSchema } from './recipients';
 
 const FollowUpSchema = new mongoose.Schema(
   {
-    template: {
-      type: String,
-    },
     recipients: [RecipientSchema],
     notification_type_id: {
       type: mongoose.Schema.Types.ObjectId,
