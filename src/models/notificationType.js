@@ -21,6 +21,9 @@ const NotificationTypeSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Template',
     },
+    notification_type_id: {
+      type: Number,
+    },
     requires_followup: {
       type: Boolean,
       default: false,

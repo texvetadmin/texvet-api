@@ -8,33 +8,40 @@ const QUEUE_URL = `https://sqs.${process.env.USERPOOL_REGION}.amazonaws.com/${pr
 
 class EmailService {
   sendEmail = async req => {
-    const { message } = req.body;
-
-    const params = {
-      MessageBody: message,
-      QueueUrl: QUEUE_URL,
-    };
-
-    sqs.sendMessage(params, (err, data) => {
-      if (err) {
-        logger.error(`[${this.constructor.name}.sendEmail] Error: ${err}`);
-        throw err;
-      } else {
-        return data;
-      }
-    });
-  };
-
-  registerFollowUps = async req => {
     try {
-      const { notification_type_id, notification_type, message } = req.body;
+      const { message: { notification_type } } = req.body;
 
       if (notification_type.requires_followup) {
-        const followUp = await FollowUp.findById({ notification_type_id }).exec();
+        const deliveryDate = new Date();
+        deliveryDate.setDate(deliveryDate.getDate() + notification_type.followup_interval);
+        const followUp = new FollowUp({
+          recipients: req.body.message.recipients,
+          notification_type_id: notification_type.notification_type_id,
+          data: req.body.message.text,
+          delivery_date: deliveryDate,
+        });
 
-        followUp.set({ data: message });
-        followUp.save();
+        followUp.save(err => {
+          if (err) {
+            logger.error(`[${this.constructor.name}.followUp.save] Error: ${err}`);
+            throw err;
+          }
+        });
       }
+
+      const params = {
+        MessageBody: req.body.message,
+        QueueUrl: QUEUE_URL,
+      };
+
+      sqs.sendMessage(params, (err, data) => {
+        if (err) {
+          logger.error(`[${this.constructor.name}.sendEmail] Error: ${err}`);
+          throw err;
+        } else {
+          return data;
+        }
+      });
     } catch (err) {
       logger.error(`[${this.constructor.name}.registerFollowUps] Error: ${err}`);
       throw err;
