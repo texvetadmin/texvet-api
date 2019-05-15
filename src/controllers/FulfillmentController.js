@@ -1,4 +1,6 @@
 import fulfillmentService from '../services/FulfillmentService';
+import followUpService from '../services/FollowUpService';
+import sqsService from '../services/SQSService';
 import logger from '../utils/logger';
 import fail from '../utils/fail';
 import { success } from '../utils/response';
@@ -6,6 +8,8 @@ import { success } from '../utils/response';
 class FulfillmentController {
   constructor() {
     this.fulfillmentService = fulfillmentService;
+    this.followUpService = followUpService;
+    this.sqsService = sqsService;
   }
 
   getResourcesBySlug = async (req, res) => {
@@ -34,6 +38,20 @@ class FulfillmentController {
       return success(res, info);
     } catch (err) {
       logger.error(`[${this.constructor.name}.getReferralsBySlug] Error: ${err}`);
+      return fail(res, err);
+    }
+  };
+
+  closeTheLoop = async (req, res) => {
+    try {
+      const followUps = await this.followUpService.getFollowUps(req);
+      await this.sqsService.generateEmail(followUps.notification_type_id);
+      const source = await this.followUpService.getFollowUp(req);
+      source.date_delivered = new Date();
+      await this.followUpService.updateFollowUp({ body: source });
+      return success(res, 'Follow-up message successfully send');
+    } catch (err) {
+      logger.error(`[${this.constructor.name}.closeTheLoop] Error: ${err}`);
       return fail(res, err);
     }
   };
