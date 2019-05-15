@@ -1,5 +1,6 @@
 import AWS from 'aws-sdk';
 import logger from '../utils/logger';
+import FollowUp from '../models/followUp';
 
 const sqs = new AWS.SQS({ region: process.env.USERPOOL_REGION });
 
@@ -22,6 +23,22 @@ class EmailService {
         return data;
       }
     });
+  };
+
+  registerFollowUps = async req => {
+    try {
+      const { notification_type_id, notification_type, message } = req.body;
+
+      if (notification_type.requires_followup) {
+        const followUp = await FollowUp.findById({ notification_type_id }).exec();
+
+        followUp.set({ data: message });
+        followUp.save();
+      }
+    } catch (err) {
+      logger.error(`[${this.constructor.name}.registerFollowUps] Error: ${err}`);
+      throw err;
+    }
   };
 }
 
