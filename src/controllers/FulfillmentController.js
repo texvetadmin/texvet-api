@@ -42,17 +42,17 @@ class FulfillmentController {
     }
   };
 
-  closeTheLoop = async (req, res) => {
+  closeTheLoop = async (event, context, callback) => {
     try {
-      const followUps = await this.followUpService.getFollowUps(req);
-      await this.sqsService.generateEmail(followUps.notification_type_id);
-      const source = await this.followUpService.getFollowUp(req);
-      source.date_delivered = new Date();
-      await this.followUpService.updateFollowUp({ body: source });
-      return success(res, 'Follow-up message successfully send');
+      const { id } = JSON.parse(event.Records[0].body);
+      const followUp = await this.followUpService.getFollowUp({ params: { id } });
+      await this.sqsService.generateEmail(followUp.notification_type_id);
+      followUp.date_delivered = new Date();
+      await this.followUpService.updateFollowUp({ body: followUp });
+      callback(null, 'Follow-up message successfully send');
     } catch (err) {
       logger.error(`[${this.constructor.name}.closeTheLoop] Error: ${err}`);
-      return fail(res, err);
+      callback(err);
     }
   };
 }

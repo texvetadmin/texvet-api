@@ -92,7 +92,7 @@ functions:
             Fn::GetAtt:
               - DeliverEmailQueue
               - Arn
-              
+
   generateEmail:
     handler: src/handlers/SQS/index.generateEmail
     path: fulfilments/generate-email
@@ -105,4 +105,11 @@ functions:
             Fn::GetAtt:
               - DeliverEmailQueue
               - Arn
+
+  closeTheLoop:
+    handler: src/handlers/fulfillment/index.closeTheLoop
+    path: fulfilments/close-the-loop
+    method: get
+    warmup: true
+    cors: true
 

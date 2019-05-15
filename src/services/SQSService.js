@@ -23,6 +23,7 @@ class SQSService {
         html: `<div>${JSON.parse(event.Records[0].body).text}</div`,
       };
       sgMail.send(msg);
+      callback(null, 'Email successfully send');
     } catch (err) {
       logger.error(`[${this.constructor.name}.deliverEmail] Error: ${err}`);
       callback(err);
