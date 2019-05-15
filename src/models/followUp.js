@@ -3,11 +3,17 @@
  */
 
 import mongoose from 'mongoose';
-import { RecipientSchema } from './recipients';
 
 const FollowUpSchema = new mongoose.Schema(
   {
-    recipients: [RecipientSchema],
+    recipients: [{
+      name: {
+        type: String,
+      },
+      email: {
+        type: String,
+      },
+    }],
     notification_type_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'NotificationType',
