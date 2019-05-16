@@ -69,7 +69,7 @@ class FulfillmentService {
       };
       sqs.sendMessageBatch(params, err => {
         if (err) {
-          logger.error(`[${this.constructor.name}.closeTheLoop] Error: ${err}`);
+          logger.error(`[${this.constructor.name}.closeTheLoop.sendMessageBatch] Error: ${err}`);
           callback(err);
         } else {
           callback(null, 'Follow-ups messages successfully send');
