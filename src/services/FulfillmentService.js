@@ -5,6 +5,7 @@ import staticResources from '../models/staticResources';
 import referrals from '../../collections/referral/data';
 import organizations from '../../collections/organization/data';
 import FollowUp from '../models/followUp';
+import EmailMessageLog from '../models/emailMessageLog';
 
 const sqs = new AWS.SQS({ region: process.env.USERPOOL_REGION });
 const QUEUE_URL = `https://sqs.${process.env.USERPOOL_REGION}.amazonaws.com/${process.env.ACCOUNT_ID}/${process.env.GENERATE_EMAIL_QUEUE_NAME}`;
@@ -62,6 +63,17 @@ class FulfillmentService {
       const now = new Date();
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       const followUps = await FollowUp.find({ delivery_date: today }).exec();
+
+      const emailLog = new EmailMessageLog({
+        initialRequestType: 'CLOSE-THE-LOOP',
+        initialRequestDate: new Date(),
+        initialRequest: JSON.parse(event.Records[0].body),
+        generateEmailMessageDate: null,
+        generateEmailMessage: null,
+        deliverEmailMessageDate: null,
+        deliverEmailMessage: null,
+      });
+      emailLog.save();
 
       const params = {
         Entries: followUps,
