@@ -16,7 +16,7 @@ class EmailService {
         deliveryDate.setDate(deliveryDate.getDate() + notification_type.followup_interval);
         const followUp = new FollowUp({
           recipients: req.body.message.recipients,
-          notification_type_id: notification_type.notification_type_id,
+          notification_type_id: notification_type.followup_notification_type_id,
           data: req.body.message.text,
           delivery_date: deliveryDate,
         });
