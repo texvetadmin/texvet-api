@@ -21,6 +21,13 @@ const NotificationTypeSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Template',
     },
+    requires_followup: {
+      type: Boolean,
+      default: false,
+    },
+    followup_interval: {
+      type: Number,
+    },
   },
   { timestamps: true, versionKey: 'version' },
 );
