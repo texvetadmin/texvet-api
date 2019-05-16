@@ -44,12 +44,7 @@ class FulfillmentController {
 
   closeTheLoop = async (event, context, callback) => {
     try {
-      const { id } = JSON.parse(event.Records[0].body);
-      const followUp = await this.followUpService.getFollowUp({ params: { id } });
-      await this.sqsService.generateEmail(followUp.notification_type_id);
-      followUp.date_delivered = new Date();
-      await this.followUpService.updateFollowUp({ body: followUp });
-      callback(null, 'Follow-up message successfully send');
+      await this.followUpService.closeTheLoop(event, context, callback);
     } catch (err) {
       logger.error(`[${this.constructor.name}.closeTheLoop] Error: ${err}`);
       callback(err);
