@@ -18,11 +18,6 @@ class SQSService {
       const now = new Date();
       const emailLog = await EmailMessageLog.findById(JSON.parse(event.Records[0].body).emailLogId).exec();
       emailLog.set({
-        initialRequestType: JSON.parse(event.Records[0].body).type,
-        initialRequestDate: now,
-        initialRequest: event.Records[0].body,
-        generateEmailMessageDate: now,
-        generateEmailMessage: JSON.parse(event.Records[0].body).message,
         deliverEmailMessageDate: now,
         deliverEmailMessage: now,
       });
@@ -59,13 +54,8 @@ class SQSService {
 
       const emailLog = await EmailMessageLog.findById(JSON.parse(event.Records[0].body).emailLogId).exec();
       emailLog.set({
-        initialRequestType: type,
-        initialRequestDate: now,
-        initialRequest: event.Records[0].body,
         generateEmailMessageDate: now,
         generateEmailMessage: generatedTemplate,
-        deliverEmailMessageDate: null,
-        deliverEmailMessage: null,
       });
       emailLog.save();
 
