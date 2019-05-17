@@ -82,11 +82,14 @@ functions:
 
   deliverEmail:
     handler: src/handlers/SQS/index.deliverEmail
-    path: fulfilments/deliver-email
     method: get
     warmup: true
     cors: true
     events:
+      - http:
+          path: /auth/v1/fulfillments/deliver-email
+          method: get
+          cors: true
       - sqs:
           arn:
             Fn::GetAtt:
@@ -95,21 +98,26 @@ functions:
 
   generateEmail:
     handler: src/handlers/SQS/index.generateEmail
-    path: fulfilments/generate-email
     method: get
     warmup: true
     cors: true
     events:
+      - http:
+          path: /auth/v1/fulfillments/generate-email
+          method: get
+          cors: true
       - sqs:
           arn:
             Fn::GetAtt:
-              - DeliverEmailQueue
+              - GenerateEmailQueue
               - Arn
 
   closeTheLoop:
-    handler: src/handlers/fulfillment/index.closeTheLoop
-    path: fulfilments/close-the-loop
-    method: get
+    handler: src/handlers/fulfillments/index.closeTheLoop
     warmup: true
-    cors: true
+    events:
+      - http:
+          path: /auth/v1/fulfillments/test
+          method: get
+          cors: true
 
