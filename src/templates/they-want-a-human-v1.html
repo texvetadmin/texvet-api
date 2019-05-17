@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>TexVet: {{user.FullName}} requested that a human contact them</title>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+    <tr>
+        <td>
+            <p>Howdy Team TexVet,</p>
+            <p>On {{conversation.date}} at {{conversation.time}} I had a conversation with {{user.FullName}}. They asked me to ask you to have a human
+                follow up with them. Their phone number is {{user.PhoneNumber}}. Their email address is {{user.EmailAddress}}. A transcript of our
+                conversation follows:</p>
+            <!--*** Start Transcript ***-->
+            <p>{{conversation.transcript}}</p>
+            <!--*** End Transcript ***-->
+            <p>TexVet (via chatbot)</p>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
