@@ -28,7 +28,7 @@ class SQSService {
         to: 'team-texvet@inventive.io',
         from: 'test@example.com',
         subject: 'Sending with SendGrid is Fun',
-        text: JSON.parse().text,
+        text: JSON.parse(event.Records[0].body).text,
         html: `<div>${JSON.parse(event.Records[0].body).text}</div`,
       };
       sgMail.send(msg);
