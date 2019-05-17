@@ -3,20 +3,20 @@
 <head>
     <meta name="viewport" content="width=device-width"/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>TexVet: {{user.FullName}} requested that a human contact them</title>
+    <title>TexVet: {{user.fullName}} requested that a human contact them</title>
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0">
     <tbody>
     <tr>
         <td>
-            <p>{{user.FullName}} requested that a human contact them to assist them:</p>
+            <p>{{user.fullName}} requested that a human contact them to assist them:</p>
             <p>Details</p>
-            <p>Client: {{user.FullName}}</p>
+            <p>Client: {{user.fullName}}</p>
             <p>Date: {{conversation.date}}</p>
             <p>Time: {{conversation.time}}</p>
-            <p>Client phone: {{user.PhoneNumber}}</p>
-            <p>Client email : {{user.EmailAddress}}</p>
+            <p>Client phone: {{user.phoneNumber}}</p>
+            <p>Client email : {{user.emailAddress}}</p>
             <!--*** Start Transcript ***-->
             <p>{{conversation.transcript}}</p>
             <!--*** End Transcript ***-->
