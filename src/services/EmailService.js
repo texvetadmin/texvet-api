@@ -1,5 +1,6 @@
 import AWS from 'aws-sdk';
 import logger from '../utils/logger';
+import EmailMessageLog from '../models/emailMessageLog';
 import FollowUp from '../models/followUp';
 
 const sqs = new AWS.SQS({ region: process.env.USERPOOL_REGION });
@@ -8,8 +9,18 @@ const QUEUE_URL = `https://sqs.${process.env.USERPOOL_REGION}.amazonaws.com/${pr
 
 class EmailService {
   sendEmail = async req => {
+    const { message: { notification_type } } = req.body;
     try {
-      const { message: { notification_type } } = req.body;
+      const emailLog = new EmailMessageLog({
+        initialRequestType: 'CHATBOT',
+        initialRequestDate: new Date(),
+        initialRequest: req.body,
+        generateEmailMessageDate: null,
+        generateEmailMessage: null,
+        deliverEmailMessageDate: null,
+        deliverEmailMessage: null,
+      });
+      emailLog.save();
 
       if (notification_type.requires_followup) {
         const deliveryDate = new Date();
@@ -32,6 +43,7 @@ class EmailService {
       const params = {
         MessageBody: req.body.message,
         QueueUrl: QUEUE_URL,
+        emailLogId: emailLog._id,
       };
 
       sqs.sendMessage(params, (err, data) => {

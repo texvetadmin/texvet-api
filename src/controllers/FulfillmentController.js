@@ -42,7 +42,7 @@ class FulfillmentController {
 
   closeTheLoop = async (event, context, callback) => {
     try {
-      await this.followUpService.closeTheLoop(event, context, callback);
+      await this.fulfillmentService.closeTheLoop(event, context, callback);
     } catch (err) {
       logger.error(`[${this.constructor.name}.closeTheLoop] Error: ${err}`);
       callback(err);
