@@ -41,8 +41,10 @@ class SQSService {
         .exec();
       const params = {
         MessageBody: {
-          subject: template.subject,
-          message: Mustache.render(template, { message: JSON.parse(event.Records[0].body).text }),
+          message: Mustache.render(template, {
+            message: JSON.parse(event.Records[0].body).text,
+            subject: template.subject,
+          }),
         },
         QueueUrl: QUEUE_URL,
       };
