@@ -1,5 +1,4 @@
 import fulfillmentService from '../services/FulfillmentService';
-import followUpService from '../services/FollowUpService';
 import logger from '../utils/logger';
 import fail from '../utils/fail';
 import { success } from '../utils/response';
@@ -7,7 +6,6 @@ import { success } from '../utils/response';
 class FulfillmentController {
   constructor() {
     this.fulfillmentService = fulfillmentService;
-    this.followUpService = followUpService;
   }
 
   getResourcesBySlug = async (req, res) => {
