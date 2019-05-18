@@ -19,7 +19,7 @@ const NotificationTypeSchema = new mongoose.Schema(
     },
     template_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Template',
+      ref: 'NotificationTemplate',
     },
     requires_followup: {
       type: Boolean,
