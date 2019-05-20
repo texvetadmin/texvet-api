@@ -42,7 +42,7 @@ class SQSService {
         .exec();
 
       let message;
-      if (type === 'transcript') {
+      if (type === 'activity-report') {
         message = {
           startDate: '',
           endDate: '',
