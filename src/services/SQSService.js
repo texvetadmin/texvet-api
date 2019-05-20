@@ -5,6 +5,7 @@ import sgMail from '@sendgrid/mail';
 import logger from '../utils/logger';
 import NotificationTypeModel from '../models/notificationType';
 import NotificationTemplateModel from '../models/notificationTemplate';
+import FollowUpModel from '../models/followUp';
 
 const sqs = new AWS.SQS({ region: process.env.USERPOOL_REGION });
 const QUEUE_URL = `https://sqs.${process.env.USERPOOL_REGION}.amazonaws.com/${process.env.ACCOUNT_ID}/${process.env.DELIVER_EMAIL_QUEUE_NAME}`;
@@ -41,6 +42,13 @@ class SQSService {
         .findOne({ _id: mongoose.Types.ObjectId(notificationType.template_id) })
         .exec();
 
+      //TODO: number of chats (per day and total),
+      //TODO: number of resources referred to (per day and total), and
+      const followUpCompleted = await FollowUpModel
+        .find({ date_delivered: new Date() })
+        .count()
+        .exec();
+
       let message;
       if (type === 'activity-report') {
         message = {
@@ -52,7 +60,7 @@ class SQSService {
           humanReq: '',
           followUpReq: '',
           followUpAttempts: '',
-          followUpCompleted: '',
+          followUpCompleted,
           noOfTextChats: '',
           noOfVoiceChats: '',
           url: '',
