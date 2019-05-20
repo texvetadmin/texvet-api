@@ -63,33 +63,32 @@ class FulfillmentService {
       const now = new Date();
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       const followUps = await FollowUp.find({ delivery_date: today }).exec();
-
-      const emailLog = new EmailMessageLog({
-        initialRequestType: 'CLOSE-THE-LOOP',
-        initialRequestDate: new Date(),
-        initialRequest: JSON.parse(event.Records[0].body),
-        generateEmailMessageDate: null,
-        generateEmailMessage: null,
-        deliverEmailMessageDate: null,
-        deliverEmailMessage: null,
-      });
-      emailLog.save();
-
-      const params = {
-        Entries: followUps,
-        QueueUrl: QUEUE_URL,
-      };
-      sqs.sendMessageBatch(params, err => {
-        if (err) {
-          logger.error(`[${this.constructor.name}.closeTheLoop.sendMessageBatch] Error: ${err}`);
-          callback(err);
-        } else {
-          callback(null, 'Follow-ups messages successfully send');
-          followUps.forEach(followUp => {
+      followUps.forEach(followUp => {
+        const emailLog = new EmailMessageLog({
+          initialRequestType: 'CLOSE-THE-LOOP',
+          initialRequestDate: new Date(),
+          initialRequest: JSON.parse(event.Records[0].body),
+          generateEmailMessageDate: null,
+          generateEmailMessage: null,
+          deliverEmailMessageDate: null,
+          deliverEmailMessage: null,
+        });
+        emailLog.save();
+        const params = {
+          MessageBody: JSON.parse(event.Records[0].body).message,
+          QueueUrl: QUEUE_URL,
+          emailLogId: emailLog._id,
+        };
+        sqs.sendMessage(params, err => {
+          if (err) {
+            logger.error(`[${this.constructor.name}.closeTheLoop.sendMessage] Error: ${err}`);
+            callback(err);
+          } else {
+            callback(null, 'Follow-up message successfully send');
             followUp.set({ date_delivered: today });
             followUp.save();
-          });
-        }
+          }
+        });
       });
     } catch (err) {
       logger.error(`[${this.constructor.name}.closeTheLoop] Error: ${err}`);
