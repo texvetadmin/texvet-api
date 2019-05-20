@@ -15,14 +15,6 @@ class SQSService {
     context.callbackWaitsForEmptyEventLoop = false;
 
     try {
-      const now = new Date();
-      const emailLog = await EmailMessageLog.findById(JSON.parse(event.Records[0].body).emailLogId).exec();
-      emailLog.set({
-        deliverEmailMessageDate: now,
-        deliverEmailMessage: now,
-      });
-      emailLog.save();
-
       sgMail.setApiKey(process.env.SENDGRID_API_KEY);
       const msg = {
         to: 'team-texvet@inventive.io',
@@ -31,6 +23,15 @@ class SQSService {
         text: JSON.parse(event.Records[0].body).text,
         html: `<div>${JSON.parse(event.Records[0].body).text}</div`,
       };
+
+      const now = new Date();
+      const emailLog = await EmailMessageLog.findById(JSON.parse(event.Records[0].body).emailLogId).exec();
+      emailLog.set({
+        deliverEmailMessageDate: now,
+        deliverEmailMessage: msg,
+      });
+      emailLog.save();
+
       sgMail.send(msg);
       callback(null, 'Email successfully send');
     } catch (err) {
@@ -51,20 +52,20 @@ class SQSService {
         .exec();
 
       const generatedTemplate = Mustache.render(template.template, { message: JSON.parse(event.Records[0].body).text });
-      const now = new Date();
+      const message = {
+        subject: template.subject,
+        message: generatedTemplate,
+      };
 
       const emailLog = await EmailMessageLog.findById(JSON.parse(event.Records[0].body).emailLogId).exec();
       emailLog.set({
-        generateEmailMessageDate: now,
-        generateEmailMessage: generatedTemplate,
+        generateEmailMessageDate: new Date(),
+        generateEmailMessage: message,
       });
       emailLog.save();
 
       const params = {
-        MessageBody: {
-          subject: '',
-          message: generatedTemplate,
-        },
+        MessageBody: message,
         QueueUrl: QUEUE_URL,
         emailLogId: emailLog._id,
       };
