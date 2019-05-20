@@ -45,7 +45,7 @@ class SQSService {
       if (type === 'transcript') {
         message = {
           user: {
-            fullname: '',
+            fullName: '',
           },
           conversation: {
             time: '',
