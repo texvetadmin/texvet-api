@@ -9,6 +9,9 @@ const NotificationTemplateSchema = new mongoose.Schema(
     template: {
       type: String,
     },
+    subject: {
+      type: String,
+    },
   },
   { timestamps: true, versionKey: 'version' },
 );

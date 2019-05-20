@@ -1,6 +1,7 @@
 import AWS from 'aws-sdk';
 import logger from '../utils/logger';
 import FollowUp from '../models/followUp';
+import EmailMessageLog from '../models/emailMessageLog';
 
 const sqs = new AWS.SQS({ region: process.env.USERPOOL_REGION });
 
@@ -29,21 +30,33 @@ class EmailService {
         });
       }
 
+      const emailLog = new EmailMessageLog({
+        initialRequestType: 'CHATBOT',
+        initialRequestDate: new Date(),
+        initialRequest: req.body,
+        generateEmailMessageDate: null,
+        generateEmailMessage: null,
+        deliverEmailMessageDate: null,
+        deliverEmailMessage: null,
+      });
+      emailLog.save();
+
       const params = {
         MessageBody: req.body.message,
         QueueUrl: QUEUE_URL,
+        emailLogId: emailLog._id,
       };
 
       sqs.sendMessage(params, (err, data) => {
         if (err) {
-          logger.error(`[${this.constructor.name}.sendEmail] Error: ${err}`);
+          logger.error(`[${this.constructor.name}.sendEmail.sendMessage] Error: ${err}`);
           throw err;
         } else {
           return data;
         }
       });
     } catch (err) {
-      logger.error(`[${this.constructor.name}.registerFollowUps] Error: ${err}`);
+      logger.error(`[${this.constructor.name}.sendEmail] Error: ${err}`);
       throw err;
     }
   };
