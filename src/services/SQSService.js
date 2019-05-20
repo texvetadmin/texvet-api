@@ -50,7 +50,7 @@ class SQSService {
         .findOne({ _id: mongoose.Types.ObjectId(type.template_id) })
         .exec();
 
-      const generatedTemplate = Mustache.render(template, { message: JSON.parse(event.Records[0].body).text });
+      const generatedTemplate = Mustache.render(template.template, { message: JSON.parse(event.Records[0].body).text });
       const now = new Date();
 
       const emailLog = await EmailMessageLog.findById(JSON.parse(event.Records[0].body).emailLogId).exec();
