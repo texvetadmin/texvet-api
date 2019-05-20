@@ -33,11 +33,12 @@ class SQSService {
     context.callbackWaitsForEmptyEventLoop = false;
 
     try {
-      const type = await NotificationTypeModel
-        .findOne({ code: JSON.parse(event.Records[0].body).type })
+      const { type } = JSON.parse(event.Records[0].body);
+      const notificationType = await NotificationTypeModel
+        .findOne({ code: type })
         .exec();
       const template = await NotificationTemplateModel
-        .findOne({ _id: mongoose.Types.ObjectId(type.template_id) })
+        .findOne({ _id: mongoose.Types.ObjectId(notificationType.template_id) })
         .exec();
 
       let message;
