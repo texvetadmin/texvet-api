@@ -33,16 +33,31 @@ class SQSService {
     context.callbackWaitsForEmptyEventLoop = false;
 
     try {
-      const type = await NotificationTypeModel
-        .findOne({ code: JSON.parse(event.Records[0].body).type })
+      const { type, text } = JSON.parse(event.Records[0].body);
+      const notificationType = await NotificationTypeModel
+        .findOne({ code: type })
         .exec();
       const template = await NotificationTemplateModel
-        .findOne({ _id: mongoose.Types.ObjectId(type.template_id) })
+        .findOne({ _id: mongoose.Types.ObjectId(notificationType.template_id) })
         .exec();
+
+      let message;
+      if (type === 'transcript') {
+        message = {
+          user: {
+            fullname: '',
+          },
+          conversation: {
+            time: '',
+            transcript: '',
+          },
+        };
+      }
+
       const params = {
         MessageBody: {
-          subject: '',
-          message: Mustache.render(template, { message: JSON.parse(event.Records[0].body).text }),
+          subject: `TexVet: Conversation transcript from ${message.conversation.time}`,
+          message: Mustache.render(template, { ...message }),
         },
         QueueUrl: QUEUE_URL,
       };
