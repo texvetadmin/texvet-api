@@ -37,6 +37,26 @@ class FulfillmentController {
       return fail(res, err);
     }
   };
+
+  setResource1 = async (req, res) => {
+    try {
+      const info = await this.fulfillmentService.setResource1(req);
+      return success(res, info);
+    } catch (err) {
+      logger.error(`[${this.constructor.name}.setResource1] Error: ${err}`);
+      return fail(res, err);
+    }
+  };
+
+  setResource2 = async (req, res) => {
+    try {
+      const info = await this.fulfillmentService.setResource2(req);
+      return success(res, info);
+    } catch (err) {
+      logger.error(`[${this.constructor.name}.setResource2] Error: ${err}`);
+      return fail(res, err);
+    }
+  };
 }
 
 export default new FulfillmentController();

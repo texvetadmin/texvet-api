@@ -20,17 +20,19 @@
             know if they did or did not offer appropriate resources to you.
 
             <p>{{conversation.resource1}} offered appropriate resources:</p>
-            <form>
+            <form name="resource1" action="resource1" method="post">
                 <label><input type="radio" name="resource1" value="Yes">Yes</label>
                 <label><input type="radio" name="resource1" value="No">No</label>
                 <label><input type="radio" name="resource1" value="n/a">n/a</label>
+                <input type="submit" value="Submit">
             </form>
 
             <p>{{conversation.resource2}} offered appropriate resources:</p>
-            <form>
+            <form name="resource2" action="resource2" method="post">
                 <label><input type="radio" name="resource2" value="Yes">Yes</label>
                 <label><input type="radio" name="resource2" value="No">No</label>
                 <label><input type="radio" name="resource2" value="n/a">n/a</label>
+                <input type="submit" value="Submit">
             </form>
 
             <p>(etc…)</p>

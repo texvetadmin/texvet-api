@@ -49,6 +49,24 @@ class FulfillmentService {
       throw err;
     }
   };
+
+  setResource1 = async req => {
+    try {
+      return null;
+    } catch (err) {
+      logger.error(`[${this.constructor.name}.setResource1] Error: ${err}`);
+      throw err;
+    }
+  };
+
+  setResource2 = async req => {
+    try {
+      return null;
+    } catch (err) {
+      logger.error(`[${this.constructor.name}.setResource1] Error: ${err}`);
+      throw err;
+    }
+  };
 }
 
 export default new FulfillmentService();
