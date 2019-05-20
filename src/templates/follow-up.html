@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>TexVet: Activity report for {{report.startDate}} - {{report.endDate}}</title>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+    <tr>
+        <td>
+            <p>Hello {{user.fullName}},</p>
+
+            <p>On {{conversation.date}} you gave me permission to send you a follow-up email to see how everything worked out. This is that follow
+                up</p>
+            email.
+
+            <p>I referred you to the following resources. When you reply to this email, please check one of the boxes for each resource and let me</p>
+            know if they did or did not offer appropriate resources to you.
+
+            <p>{{conversation.resource1}} offered appropriate resources:</p>
+            <form>
+                <label><input type="radio" name="resource1" value="Yes">Yes</label>
+                <label><input type="radio" name="resource1" value="No">No</label>
+                <label><input type="radio" name="resource1" value="n/a">n/a</label>
+            </form>
+
+            <p>{{conversation.resource2}} offered appropriate resources:</p>
+            <form>
+                <label><input type="radio" name="resource2" value="Yes">Yes</label>
+                <label><input type="radio" name="resource2" value="No">No</label>
+                <label><input type="radio" name="resource2" value="n/a">n/a</label>
+            </form>
+
+            <p>(etc…)</p>
+
+            <p>Your input is very useful. We use your responses to track how effective these services are. We sincerely appreciate your effort.</p>
+
+            <p>Please contact us at https://texvet.org/contactus, contactus@texvet.org, or 512-341-4924 if you have any questions or require</p>
+            additional information.
+
+            <p>Thank you very much,</p>
+
+            <p>TexVet (via chatbot)</p>
+            <p>texvet.org</p>
+            <p>contactus@texvet.org</p>
+            <p>512-341-4924</p>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

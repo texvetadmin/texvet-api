@@ -42,32 +42,38 @@ class SQSService {
     context.callbackWaitsForEmptyEventLoop = false;
 
     try {
-      const type = await NotificationTypeModel
-        .findOne({ code: JSON.parse(event.Records[0].body).type })
+      const { type } = JSON.parse(event.Records[0].body);
+      const notificationType = await NotificationTypeModel
+        .findOne({ code: type })
         .exec();
       const template = await NotificationTemplateModel
-        .findOne({ _id: mongoose.Types.ObjectId(type.template_id) })
+        .findOne({ _id: mongoose.Types.ObjectId(notificationType.template_id) })
         .exec();
 
-      const generatedTemplate = Mustache.render(template, { message: JSON.parse(event.Records[0].body).text });
-      const now = new Date();
-
-      const emailLog = await EmailMessageLog.findById(JSON.parse(event.Records[0].body).emailLogId).exec();
-      emailLog.set({
-        generateEmailMessageDate: now,
-        generateEmailMessage: generatedTemplate,
-      });
-      emailLog.save();
+      let message;
+      if (type === 'follow-up') {
+        message = {
+          report: {
+            startDate: '',
+            endDate: '',
+          },
+          user: {
+            fullName: '',
+          },
+          conversation: {
+            date: '',
+            resource1: '',
+            resource2: '',
+          },
+        };
+      }
 
       const params = {
         MessageBody: {
-          message: Mustache.render(template, {
-            message: JSON.parse(event.Records[0].body).text,
-            subject: template.subject,
-          }),
+          subject: `TexVet: Follow up to referrals on ${message.conversation.time}`,
+          message: Mustache.render(template, { ...message }),
         },
         QueueUrl: QUEUE_URL,
-        emailLogId: emailLog._id,
       };
 
       sqs.sendMessage(params, (err, data) => {
