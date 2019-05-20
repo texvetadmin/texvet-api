@@ -39,10 +39,27 @@ class SQSService {
       const template = await NotificationTemplateModel
         .findOne({ _id: mongoose.Types.ObjectId(type.template_id) })
         .exec();
+
+      let message;
+      if (type === 'they-want-a-human-v1') {
+        message = {
+          user: {
+            fullName: '',
+            emailAddress: '',
+            phoneNumber: '',
+          },
+          conversation: {
+            date: '',
+            time: '',
+            transcript: '',
+          },
+        };
+      }
+
       const params = {
         MessageBody: {
-          subject: '',
-          message: Mustache.render(template, { message: JSON.parse(event.Records[0].body).text }),
+          subject: `TexVet: ${message.user.fullName} requested that a human contact them`,
+          message: Mustache.render(template, { ...message }),
         },
         QueueUrl: QUEUE_URL,
       };
