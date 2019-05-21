@@ -49,6 +49,21 @@ class FulfillmentService {
       throw err;
     }
   };
+
+  createHistoryMessage = async req => {
+    try {
+      const {
+        body: { type, value },
+      } = req;
+
+      // TODO: Store the incoming messages to a chatbot-history collection in MongoDB.
+
+      return 'Thank you for your input. It has been logged.';
+    } catch (err) {
+      logger.error(`[${this.constructor.name}.createHistoryMessage] Error: ${err}`);
+      throw err;
+    }
+  };
 }
 
 export default new FulfillmentService();

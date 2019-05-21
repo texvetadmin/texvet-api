@@ -37,6 +37,16 @@ class FulfillmentController {
       return fail(res, err);
     }
   };
+
+  createHistoryMessage = async (req, res) => {
+    try {
+      const info = await this.fulfillmentService.createHistoryMessage(req);
+      return success(res, info);
+    } catch (err) {
+      logger.error(`[${this.constructor.name}.createHistoryMessage] Error: ${err}`);
+      return fail(res, err);
+    }
+  }
 }
 
 export default new FulfillmentController();
