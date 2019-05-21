@@ -1,4 +1,4 @@
-export default [
+module.exports = [
   {
     code: 'SET-APPOINTMENT',
     name: 'Type #1',

@@ -1,4 +1,4 @@
-export default [
+module.exports = [
   {
     organization: 'Veterans County Service Office',
     title: null,

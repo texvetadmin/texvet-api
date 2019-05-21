@@ -1,4 +1,4 @@
-export default [
+module.exports = [
   {
     name: 'Catholic Charities Central Texas Veteran Services Program',
     phone: '979-822-9340',

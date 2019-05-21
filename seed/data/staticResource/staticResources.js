@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-export default [
+module.exports = [
   {
     slug: 'the-hazlewood-act',
     name: 'The Hazlewood Act',
