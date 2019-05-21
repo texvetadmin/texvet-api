@@ -16,9 +16,9 @@ class EmailService {
         const deliveryDate = new Date();
         deliveryDate.setDate(deliveryDate.getDate() + notification_type.followup_interval);
         const followUp = new FollowUp({
-          recipients: req.body.message.recipients,
+          recipients: req.body.recipients,
           notification_type_id: notification_type.followup_notification_type_id,
-          data: req.body.message.text,
+          data: req.body,
           delivery_date: deliveryDate,
         });
 
@@ -42,7 +42,8 @@ class EmailService {
       emailLog.save();
 
       const params = {
-        MessageBody: req.body.message,
+        type: req.body.type,
+        data: req.body,
         QueueUrl: QUEUE_URL,
         emailLogId: emailLog._id,
       };

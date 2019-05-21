@@ -75,7 +75,8 @@ class FulfillmentService {
         });
         emailLog.save();
         const params = {
-          MessageBody: JSON.parse(event.Records[0].body).message,
+          type: JSON.parse(event.Records[0].body).type,
+          data: followUp.data,
           QueueUrl: QUEUE_URL,
           emailLogId: emailLog._id,
         };
