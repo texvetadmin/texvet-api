@@ -5,7 +5,7 @@ import sgMail from '@sendgrid/mail';
 import logger from '../utils/logger';
 import NotificationTypeModel from '../models/notificationType';
 import NotificationTemplateModel from '../models/notificationTemplate';
-import EmailMessageLog from '../models/emailMessageLog';
+import EmailMessageLogService from './EmailMessageLogService';
 
 const sqs = new AWS.SQS({ region: process.env.USERPOOL_REGION });
 const QUEUE_URL = `https://sqs.${process.env.USERPOOL_REGION}.amazonaws.com/${process.env.ACCOUNT_ID}/${process.env.DELIVER_EMAIL_QUEUE_NAME}`;
@@ -15,25 +15,20 @@ class SQSService {
     context.callbackWaitsForEmptyEventLoop = false;
 
     try {
+      const queueMessage = JSON.parse(event.Records[0].body);
+
       sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-      const { message, subject } = JSON.parse(event.Records[0].body).message;
-      const msg = {
-        to: 'team-texvet@inventive.io',
-        from: 'test@example.com',
+      const { subject, body } = queueMessage.data;
+      const emailMessage = {
+        to: 'team-texvet+test@inventive.io',
+        from: 'team-texvet@inventive.io',
         subject,
-        text: message,
-        html: `<div>${message}</div`,
+        html: body,
       };
 
-      const now = new Date();
-      const emailLog = await EmailMessageLog.findById(JSON.parse(event.Records[0].body).emailLogId).exec();
-      emailLog.set({
-        deliverEmailMessageDate: now,
-        deliverEmailMessage: msg,
-      });
-      emailLog.save();
+      await EmailMessageLogService.logEmailDelivery(body.emailLogId, emailMessage);
 
-      sgMail.send(msg);
+      sgMail.send(emailMessage);
       callback(null, 'Email successfully send');
     } catch (err) {
       logger.error(`[${this.constructor.name}.deliverEmail] Error: ${err}`);
@@ -45,33 +40,31 @@ class SQSService {
     context.callbackWaitsForEmptyEventLoop = false;
 
     try {
+      const queueMessage = JSON.parse(event.Records[0].body);
+
       const type = await NotificationTypeModel
-        .findOne({ code: JSON.parse(event.Records[0].body).type })
+        .findOne({ code: queueMessage.type })
         .exec();
       const template = await NotificationTemplateModel
         .findOne({ _id: mongoose.Types.ObjectId(type.template_id) })
         .exec();
 
-      const generatedTemplate = Mustache.render(template.template, { message: JSON.parse(event.Records[0].body).text });
-      const message = {
-        subject: template.subject,
-        message: generatedTemplate,
+      const generatedSubject = Mustache.render(template.subject, queueMessage.data);
+      const generatedBody = Mustache.render(template.template, queueMessage.data);
+      const messageData = {
+        subject: generatedSubject,
+        body: generatedBody,
       };
 
-      const emailLog = await EmailMessageLog.findById(JSON.parse(event.Records[0].body).emailLogId).exec();
-      emailLog.set({
-        generateEmailMessageDate: new Date(),
-        generateEmailMessage: message,
-      });
-      emailLog.save();
+      await EmailMessageLogService.logEmailGeneration(queueMessage.emailLogId, messageData);
 
       const params = {
-        message: Mustache.render(template, {
-          message: JSON.parse(event.Records[0].body).text,
-          subject: template.subject,
-        }),
+        MessageBody: {
+          type: queueMessage.type,
+          data: messageData,
+          emailLogId: queueMessage.emailLogId,
+        },
         QueueUrl: QUEUE_URL,
-        emailLogId: emailLog._id,
       };
 
       sqs.sendMessage(params, (err, data) => {

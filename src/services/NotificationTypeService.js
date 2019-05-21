@@ -55,6 +55,9 @@ class NotificationTypeService {
         'code',
         'description',
         'template_id',
+        'requires_followup',
+        'followup_notification_type',
+        'followup_interval',
       ]);
 
       const type = new NotificationType(data);
