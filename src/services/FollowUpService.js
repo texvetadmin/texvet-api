@@ -1,6 +1,7 @@
 import { isNil, pick } from 'lodash';
 import { getListFilters } from '../utils/filter';
 import logger from '../utils/logger';
+import NotificationType from '../models/notificationType';
 import FollowUp from '../models/followUp';
 import { ApiError } from '../utils/errors';
 
@@ -54,7 +55,7 @@ class FollowUpService {
       const { body } = req;
       const data = pick(body, [
         'recipients',
-        'notification_type_id',
+        'notification_type',
         'data',
         'delivery_date',
         'date_delivered',
@@ -109,6 +110,30 @@ class FollowUpService {
     } catch (err) {
       logger.error(`[${this.constructor.name}.deleteFollowUp] Error: ${err}`);
       throw err;
+    }
+  };
+
+  addFollupIfNecessary = async (code, data) => {
+    const notificationType = await NotificationType
+      .findOne({ code })
+      .exec();
+
+    if (notificationType.requires_followup) {
+      const deliveryDate = new Date();
+      deliveryDate.setDate(deliveryDate.getDate() + notificationType.followup_interval);
+      const followUp = new FollowUp({
+        recipients: data.recipients,
+        notification_type: notificationType.followup_notification_type,
+        data,
+        delivery_date: deliveryDate,
+      });
+
+      followUp.save(err => {
+        if (err) {
+          logger.error(`[${this.constructor.name}.followUp.save] Error: ${err}`);
+          throw err;
+        }
+      });
     }
   };
 }
