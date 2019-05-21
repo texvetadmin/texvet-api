@@ -12,7 +12,7 @@ class EmailService {
     try {
       const { body, body: { type: code } } = req.body;
 
-      const emailLogId = EmailMessageLogService.logEmailRequested('CHATBOT', body);
+      const emailLogId = EmailMessageLogService.logEmailRequest('CHATBOT', body);
 
       const params = {
         MessageBody: {

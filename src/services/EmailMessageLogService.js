@@ -1,7 +1,7 @@
 import EmailMessageLog from '../models/emailMessageLog';
 
 class EmailMessageLogService {
-  logEmailRequested = (type, data) => {
+  logEmailRequest = (type, data) => {
     const emailLog = new EmailMessageLog({
       initialRequestType: type,
       initialRequestDate: new Date(),

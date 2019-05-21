@@ -66,7 +66,7 @@ class FulfillmentService {
       const followUps = await FollowUp.find({ delivery_date: today }).exec();
 
       const handleSingleFollowUp = async followUp => {
-        const emailLogId = EmailMessageLogService.logEmailRequested('CLOSE-THE-LOOP', followUp.data);
+        const emailLogId = EmailMessageLogService.logEmailRequest('CLOSE-THE-LOOP', followUp.data);
 
         const params = {
           MessageBody: {
