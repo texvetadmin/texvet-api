@@ -83,4 +83,3 @@ class SQSService {
 }
 
 export default new SQSService();
-© 2019 GitHub, Inc.
