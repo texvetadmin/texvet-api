@@ -14,13 +14,10 @@ const FollowUpSchema = new mongoose.Schema(
         type: String,
       },
     }],
-    notification_type_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'NotificationType',
-    },
-    data: {
+    notification_type: {
       type: String,
     },
+    data: {},
     delivery_date: {
       type: Date,
     },

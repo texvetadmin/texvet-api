@@ -1,7 +1,7 @@
 import AWS from 'aws-sdk';
 import logger from '../utils/logger';
-import FollowUp from '../models/followUp';
-import EmailMessageLog from '../models/emailMessageLog';
+import EmailMessageLogService from './EmailMessageLogService';
+import FollowUpService from './FollowUpService';
 
 const sqs = new AWS.SQS({ region: process.env.USERPOOL_REGION });
 
@@ -10,41 +10,17 @@ const QUEUE_URL = `https://sqs.${process.env.USERPOOL_REGION}.amazonaws.com/${pr
 class EmailService {
   sendEmail = async req => {
     try {
-      const { message: { notification_type } } = req.body;
+      const { body, body: { type: code } } = req.body;
 
-      if (notification_type.requires_followup) {
-        const deliveryDate = new Date();
-        deliveryDate.setDate(deliveryDate.getDate() + notification_type.followup_interval);
-        const followUp = new FollowUp({
-          recipients: req.body.message.recipients,
-          notification_type_id: notification_type.followup_notification_type_id,
-          data: req.body.message.text,
-          delivery_date: deliveryDate,
-        });
-
-        followUp.save(err => {
-          if (err) {
-            logger.error(`[${this.constructor.name}.followUp.save] Error: ${err}`);
-            throw err;
-          }
-        });
-      }
-
-      const emailLog = new EmailMessageLog({
-        initialRequestType: 'CHATBOT',
-        initialRequestDate: new Date(),
-        initialRequest: req.body,
-        generateEmailMessageDate: null,
-        generateEmailMessage: null,
-        deliverEmailMessageDate: null,
-        deliverEmailMessage: null,
-      });
-      emailLog.save();
+      const emailLogId = EmailMessageLogService.logEmailRequest('CHATBOT', body);
 
       const params = {
-        MessageBody: req.body.message,
+        MessageBody: {
+          type: code,
+          data: body,
+          emailLogId,
+        },
         QueueUrl: QUEUE_URL,
-        emailLogId: emailLog._id,
       };
 
       sqs.sendMessage(params, (err, data) => {
@@ -55,6 +31,8 @@ class EmailService {
           return data;
         }
       });
+
+      await FollowUpService.addFollupIfNecessary(code, body);
     } catch (err) {
       logger.error(`[${this.constructor.name}.sendEmail] Error: ${err}`);
       throw err;

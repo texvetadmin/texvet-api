@@ -112,3 +112,12 @@ functions:
               - GenerateEmailQueue
               - Arn
 
+  closeTheLoop:
+    handler: src/handlers/fulfillments/index.closeTheLoop
+    warmup: true
+    events:
+      - http:
+          path: /auth/v1/fulfillments/test
+          method: get
+          cors: true
+
