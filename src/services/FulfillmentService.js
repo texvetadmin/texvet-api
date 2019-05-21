@@ -5,7 +5,8 @@ import staticResources from '../models/staticResources';
 import referrals from '../../collections/referral/data';
 import organizations from '../../collections/organization/data';
 import FollowUp from '../models/followUp';
-import EmailMessageLog from '../models/emailMessageLog';
+import FollUpService from './FollowUpService';
+import EmailMessageLogService from './EmailMessageLogService';
 
 const sqs = new AWS.SQS({ region: process.env.USERPOOL_REGION });
 const QUEUE_URL = `https://sqs.${process.env.USERPOOL_REGION}.amazonaws.com/${process.env.ACCOUNT_ID}/${process.env.GENERATE_EMAIL_QUEUE_NAME}`;
@@ -60,37 +61,39 @@ class FulfillmentService {
     context.callbackWaitsForEmptyEventLoop = false;
 
     try {
+      const handleSingleFollowUp = async followUp => {
+        const emailLogId = EmailMessageLogService.logEmailRequest('CLOSE-THE-LOOP', followUp.data);
+
+        const params = {
+          MessageBody: {
+            type: followUp.notification_type,
+            data: followUp.data,
+            emailLogId,
+          },
+          QueueUrl: QUEUE_URL,
+        };
+        sqs.sendMessage(params, err => {
+          if (err) {
+            logger.error(`[${this.constructor.name}.closeTheLoop.sendMessage] Error: ${err}`);
+            throw err;
+          } else {
+            followUp.set({ date_delivered: new Date() });
+            followUp.save();
+          }
+        });
+
+        await FollUpService.addFollupIfNecessary(followUp.notification_type, followUp.data);
+      };
+
       const now = new Date();
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       const followUps = await FollowUp.find({ delivery_date: today }).exec();
+      if (followUps && followUps.length) {
+        const tasks = followUps.map(f => handleSingleFollowUp(f));
+        await Promise.all(tasks);
+      }
 
-      const emailLog = new EmailMessageLog({
-        initialRequestType: 'CLOSE-THE-LOOP',
-        initialRequestDate: new Date(),
-        initialRequest: JSON.parse(event.Records[0].body),
-        generateEmailMessageDate: null,
-        generateEmailMessage: null,
-        deliverEmailMessageDate: null,
-        deliverEmailMessage: null,
-      });
-      emailLog.save();
-
-      const params = {
-        Entries: followUps,
-        QueueUrl: QUEUE_URL,
-      };
-      sqs.sendMessageBatch(params, err => {
-        if (err) {
-          logger.error(`[${this.constructor.name}.closeTheLoop.sendMessageBatch] Error: ${err}`);
-          callback(err);
-        } else {
-          callback(null, 'Follow-ups messages successfully send');
-          followUps.forEach(followUp => {
-            followUp.set({ date_delivered: today });
-            followUp.save();
-          });
-        }
-      });
+      callback(null, 'Follow-up messages successfully sent');
     } catch (err) {
       logger.error(`[${this.constructor.name}.closeTheLoop] Error: ${err}`);
       callback(err);
