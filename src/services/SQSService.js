@@ -42,11 +42,11 @@ class SQSService {
     try {
       const queueMessage = JSON.parse(event.Records[0].body);
 
-      const notificationType = await NotificationTypeModel
+      const type = await NotificationTypeModel
         .findOne({ code: queueMessage.type })
         .exec();
       const template = await NotificationTemplateModel
-        .findOne({ _id: mongoose.Types.ObjectId(notificationType.template_id) })
+        .findOne({ _id: mongoose.Types.ObjectId(type.template_id) })
         .exec();
 
       const generatedSubject = Mustache.render(template.subject, queueMessage.data);
@@ -67,12 +67,12 @@ class SQSService {
         QueueUrl: QUEUE_URL,
       };
 
-      sqs.sendMessage(params, (err, response) => {
+      sqs.sendMessage(params, (err, data) => {
         if (err) {
           logger.error(`[${this.constructor.name}.generateEmail.sendMessage] Error: ${err}`);
           callback(err);
         } else {
-          callback(null, response);
+          callback(null, data);
         }
       });
     } catch (err) {
