@@ -16,12 +16,13 @@ class SQSService {
 
     try {
       sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+      const { message, subject } = JSON.parse(event.Records[0].body).message;
       const msg = {
         to: 'team-texvet@inventive.io',
         from: 'test@example.com',
-        subject: 'Sending with SendGrid is Fun',
-        text: JSON.parse(event.Records[0].body).text,
-        html: `<div>${JSON.parse(event.Records[0].body).text}</div`,
+        subject,
+        text: message,
+        html: `<div>${message}</div`,
       };
 
       const now = new Date();
@@ -65,12 +66,10 @@ class SQSService {
       emailLog.save();
 
       const params = {
-        MessageBody: {
-          message: Mustache.render(template, {
-            message: JSON.parse(event.Records[0].body).text,
-            subject: template.subject,
-          }),
-        },
+        message: Mustache.render(template, {
+          message: JSON.parse(event.Records[0].body).text,
+          subject: template.subject,
+        }),
         QueueUrl: QUEUE_URL,
         emailLogId: emailLog._id,
       };
