@@ -86,7 +86,7 @@ class FulfillmentService {
           }
         });
 
-        await FollUpService.addFollowUpByTypeCode(followUp.notification_type, followUp.data);
+        await FollUpService.addFollupIfNecessary(followUp.notification_type, followUp.data);
       };
 
       const tasks = followUps.map(f => handleSingleFollowUp(f, callback));
