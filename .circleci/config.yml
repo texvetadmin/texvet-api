@@ -44,7 +44,8 @@ jobs:
     steps:
       - setup-dependencies
       - run: npm run test:unit
-      - run: npm run build
+      - run: npm run seed:development
+      - run: npm run build:development
       - persist_to_workspace:
           root: .
           paths: .serverless
@@ -54,6 +55,7 @@ jobs:
 
     steps:
       - setup-dependencies
+      - run: npm run seed:staging
       - run: npm run build:staging
       - persist_to_workspace:
           root: .
@@ -64,6 +66,7 @@ jobs:
 
     steps:
       - setup-dependencies
+      - run: npm run seed:demo
       - run: npm run build:demo
       - persist_to_workspace:
           root: .
@@ -74,7 +77,8 @@ jobs:
 
     steps:
       - setup-dependencies
-      - run: npm run build:prod
+      - run: npm run seed:production
+      - run: npm run build:production
       - persist_to_workspace:
           root: .
           paths: .serverless
