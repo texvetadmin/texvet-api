@@ -1,5 +1,5 @@
 const createIdentityUser = require('./identity/create-user');
-const users = require('../scripts/test/users/data');
+const users = require('../seed/data/user/users');
 const dbSeeder = require('./seed-db');
 
 const region = process.env.USERPOOL_REGION;
