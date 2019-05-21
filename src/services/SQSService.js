@@ -43,7 +43,7 @@ class SQSService {
 
       const params = {
         MessageBody: {
-          subject: Mustache.render(template.subject, data.conversation.time),
+          subject: Mustache.render(template.subject, { ...data }),
           message: Mustache.render(template.template, { ...data }),
         },
         QueueUrl: QUEUE_URL,
