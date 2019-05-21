@@ -1,8 +1,15 @@
 /* eslint-disable no-unused-vars */
+import AWS from 'aws-sdk';
 import logger from '../utils/logger';
 import staticResources from '../models/staticResources';
 import referrals from '../../collections/referral/data';
 import organizations from '../../collections/organization/data';
+import FollowUp from '../models/followUp';
+import FollUpService from './FollowUpService';
+import EmailMessageLogService from './EmailMessageLogService';
+
+const sqs = new AWS.SQS({ region: process.env.USERPOOL_REGION });
+const QUEUE_URL = `https://sqs.${process.env.USERPOOL_REGION}.amazonaws.com/${process.env.ACCOUNT_ID}/${process.env.GENERATE_EMAIL_QUEUE_NAME}`;
 
 class FulfillmentService {
   getResourcesBySlug = async req => {
@@ -47,6 +54,49 @@ class FulfillmentService {
     } catch (err) {
       logger.error(`[${this.constructor.name}.getReferralsBySlug] Error: ${err}`);
       throw err;
+    }
+  };
+
+  closeTheLoop = async (event, context, callback) => {
+    context.callbackWaitsForEmptyEventLoop = false;
+
+    try {
+      const handleSingleFollowUp = async followUp => {
+        const emailLogId = EmailMessageLogService.logEmailRequest('CLOSE-THE-LOOP', followUp.data);
+
+        const params = {
+          MessageBody: {
+            type: followUp.notification_type,
+            data: followUp.data,
+            emailLogId,
+          },
+          QueueUrl: QUEUE_URL,
+        };
+        sqs.sendMessage(params, err => {
+          if (err) {
+            logger.error(`[${this.constructor.name}.closeTheLoop.sendMessage] Error: ${err}`);
+            throw err;
+          } else {
+            followUp.set({ date_delivered: new Date() });
+            followUp.save();
+          }
+        });
+
+        await FollUpService.addFollupIfNecessary(followUp.notification_type, followUp.data);
+      };
+
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const followUps = await FollowUp.find({ delivery_date: today }).exec();
+      if (followUps && followUps.length) {
+        const tasks = followUps.map(f => handleSingleFollowUp(f));
+        await Promise.all(tasks);
+      }
+
+      callback(null, 'Follow-up messages successfully sent');
+    } catch (err) {
+      logger.error(`[${this.constructor.name}.closeTheLoop] Error: ${err}`);
+      callback(err);
     }
   };
 }

@@ -25,8 +25,8 @@ const NotificationTypeSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    followup_notification_type_id: {
-      type: Number,
+    followup_notification_type: {
+      type: String,
     },
     followup_interval: {
       type: Number,
