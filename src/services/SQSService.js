@@ -34,7 +34,7 @@ class SQSService {
     context.callbackWaitsForEmptyEventLoop = false;
 
     try {
-      const { type } = JSON.parse(event.Records[0].body);
+      const { type, data } = JSON.parse(event.Records[0].body);
       const notificationType = await NotificationTypeModel
         .findOne({ code: type })
         .exec();
@@ -42,45 +42,20 @@ class SQSService {
         .findOne({ _id: mongoose.Types.ObjectId(notificationType.template_id) })
         .exec();
 
-      //TODO: number of chats (per day and total),
-      //TODO: number of resources referred to (per day and total), and
-      const followUpCompleted = await FollowUpModel
-        .find({ date_delivered: new Date() })
-        .count()
-        .exec();
-
-      let message;
-      if (type === 'activity-report') {
-        message = {
-          startDate: '',
-          endDate: '',
-          startedChats: '',
-          referralChats: '',
-          transcriptReq: '',
-          humanReq: '',
-          followUpReq: '',
-          followUpAttempts: '',
-          followUpCompleted,
-          noOfTextChats: '',
-          noOfVoiceChats: '',
-          url: '',
-        };
-      }
-
       const params = {
         MessageBody: {
-          subject: `TexVet: Activity report for ${message.startDate} - ${message.endDate}`,
-          message: Mustache.render(template, { ...message }),
+          subject: Mustache.render(template.subject, { ...data }),
+          message: Mustache.render(template.template, { ...data }),
         },
         QueueUrl: QUEUE_URL,
       };
 
-      sqs.sendMessage(params, (err, data) => {
+      sqs.sendMessage(params, (err, response) => {
         if (err) {
           logger.error(`[${this.constructor.name}.generateEmail.sendMessage] Error: ${err}`);
           callback(err);
         } else {
-          callback(null, data);
+          callback(null, response);
         }
       });
     } catch (err) {
