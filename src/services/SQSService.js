@@ -65,7 +65,12 @@ class SQSService {
       emailLog.save();
 
       const params = {
-        MessageBody: message,
+        MessageBody: {
+          message: Mustache.render(template, {
+            message: JSON.parse(event.Records[0].body).text,
+            subject: template.subject,
+          }),
+        },
         QueueUrl: QUEUE_URL,
         emailLogId: emailLog._id,
       };
