@@ -61,10 +61,6 @@ class FulfillmentService {
     context.callbackWaitsForEmptyEventLoop = false;
 
     try {
-      const now = new Date();
-      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      const followUps = await FollowUp.find({ delivery_date: today }).exec();
-
       const handleSingleFollowUp = async followUp => {
         const emailLogId = EmailMessageLogService.logEmailRequest('CLOSE-THE-LOOP', followUp.data);
 
@@ -89,8 +85,13 @@ class FulfillmentService {
         await FollUpService.addFollupIfNecessary(followUp.notification_type, followUp.data);
       };
 
-      const tasks = followUps.map(f => handleSingleFollowUp(f, callback));
-      await Promise.all(tasks);
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const followUps = await FollowUp.find({ delivery_date: today }).exec();
+      if (followUps && followUps.length) {
+        const tasks = followUps.map(f => handleSingleFollowUp(f));
+        await Promise.all(tasks);
+      }
 
       callback(null, 'Follow-up messages successfully sent');
     } catch (err) {
