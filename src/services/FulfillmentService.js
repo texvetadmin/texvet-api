@@ -7,6 +7,7 @@ import organizations from '../../collections/organization/data';
 import FollowUp from '../models/followUp';
 import FollUpService from './FollowUpService';
 import EmailMessageLogService from './EmailMessageLogService';
+import ChatbotHistory from '../models/chatbotHistory';
 
 const sqs = new AWS.SQS({ region: process.env.USERPOOL_REGION });
 const QUEUE_URL = `https://sqs.${process.env.USERPOOL_REGION}.amazonaws.com/${process.env.ACCOUNT_ID}/${process.env.GENERATE_EMAIL_QUEUE_NAME}`;
@@ -100,17 +101,14 @@ class FulfillmentService {
     }
   };
 
-  createHistoryMessage = async req => {
+  saveMessage = async req => {
     try {
-      const {
-        body: { type, value },
-      } = req;
-
-      // TODO: Store the incoming messages to a chatbot-history collection in MongoDB.
+      const chatbotHistory = new ChatbotHistory({ data: req.body });
+      chatbotHistory.save();
 
       return 'Thank you for your input. It has been logged.';
     } catch (err) {
-      logger.error(`[${this.constructor.name}.createHistoryMessage] Error: ${err}`);
+      logger.error(`[${this.constructor.name}.saveMessage] Error: ${err}`);
       throw err;
     }
   };
