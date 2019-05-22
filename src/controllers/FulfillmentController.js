@@ -38,6 +38,15 @@ class FulfillmentController {
     }
   };
 
+  closeTheLoop = async (event, context, callback) => {
+    try {
+      await this.fulfillmentService.closeTheLoop(event, context, callback);
+    } catch (err) {
+      logger.error(`[${this.constructor.name}.closeTheLoop] Error: ${err}`);
+      callback(err);
+    }
+  };
+
   createHistoryMessage = async (req, res) => {
     try {
       const info = await this.fulfillmentService.createHistoryMessage(req);
@@ -46,7 +55,7 @@ class FulfillmentController {
       logger.error(`[${this.constructor.name}.createHistoryMessage] Error: ${err}`);
       return fail(res, err);
     }
-  }
+  };
 }
 
 export default new FulfillmentController();
