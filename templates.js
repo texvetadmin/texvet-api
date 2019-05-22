@@ -35,7 +35,6 @@ db.once('open', async () => {
         const template = NotificationTemplate.findOne({ name: subjectName });
         template.subject = data;
         template.save();
-        console.log('111');
       } catch (err) {
         console.log('Subjects update Error: ', err);
       }
@@ -58,12 +57,10 @@ db.once('open', async () => {
           minifyJs: true,
         });
         template.save();
-        console.log('222');
       } catch (err) {
         console.log('Templates update Error: ', err);
       }
     });
-  console.log('333');
 });
 
 
