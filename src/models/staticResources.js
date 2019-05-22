@@ -1,5 +1,5 @@
 /**
- * NotificationType model
+ * StaticResources model
  */
 
 import mongoose from 'mongoose';
