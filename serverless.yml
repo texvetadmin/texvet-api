@@ -120,7 +120,6 @@ functions:
           path: /auth/v1/fulfillments/test
           method: get
           cors: true
-    events:
       - schedule:
           rate: cron(0 10 * * ? *)
           enabled: false
