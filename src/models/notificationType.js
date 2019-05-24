@@ -17,8 +17,8 @@ const NotificationTypeSchema = new mongoose.Schema(
     description: {
       type: String,
     },
-    template_id: {
-      type: mongoose.Schema.Types.ObjectId,
+    template_name: {
+      type: String,
       ref: 'NotificationTemplate',
     },
     requires_followup: {
