@@ -5,11 +5,13 @@ const { Seeder } = require('mongo-seeding');
 const yamlConfig = require('node-yaml-config');
 
 const path = require('path');
+const { AWS_PROFILE } = require('../config');
 require('../config');
 
 const dataPath = path.resolve(__dirname, 'data');
 
 function seedDb() {
+  process.env.AWS_PROFILE = AWS_PROFILE;
   const envConfig = yamlConfig.load(path.resolve(__dirname, '../env.yml'));
   const config = {
     database: envConfig.MONGODB_URI,

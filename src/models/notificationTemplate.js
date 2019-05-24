@@ -6,6 +6,9 @@ import mongoose from 'mongoose';
 
 const NotificationTemplateSchema = new mongoose.Schema(
   {
+    name: {
+      type: String,
+    },
     template: {
       type: String,
     },

@@ -1,14 +1,14 @@
 module.exports = [
   {
     code: 'SET-APPOINTMENT',
-    name: 'Type #1',
+    name: 'Activity report notification',
     description: 'Test notification type',
-    template_id: 1,
+    template_name: 'activity',
   },
   {
     code: 'APPOINTMENT-REMINDER',
-    name: 'Type #2',
+    name: 'Transcript notification',
     description: 'Test notification type',
-    template_id: 2,
+    template_name: 'transcript',
   },
 ];
