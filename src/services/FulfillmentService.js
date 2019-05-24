@@ -1,8 +1,10 @@
 /* eslint-disable no-unused-vars */
 import AWS from 'aws-sdk';
+import fetch from 'node-fetch';
+import { DOMAINS } from '../constants';
 import logger from '../utils/logger';
 import staticResources from '../models/staticResources';
-import referrals from '../../collections/referral/data';
+// import referrals from '../../collections/referral/data';
 import organizations from '../../collections/organization/data';
 import FollowUp from '../models/followUp';
 import FollUpService from './FollowUpService';
@@ -47,10 +49,18 @@ class FulfillmentService {
         params: { slug },
         body: { type, value },
       } = req;
-
+      const url = `${DOMAINS[node.env.NODE_ENV]}/rest/v1/fulfillments/referrals/${slug.zipCode}`;
       // TODO: get items by slug,type and value
 
-      return referrals;
+      const resp = await fetch(url);
+      const response = await resp.json();
+      return response.map(data => ({
+        organization: data.title || null,
+        title: data.field_partner_contact_title || null,
+        phone: data.field_phone || null,
+        email: data.field_email || null,
+        additional_email: data.field_persons_direct_work_email || null,
+      }));
     } catch (err) {
       logger.error(`[${this.constructor.name}.getReferralsBySlug] Error: ${err}`);
       throw err;
