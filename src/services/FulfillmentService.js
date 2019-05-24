@@ -7,7 +7,7 @@ import organizations from '../../collections/organization/data';
 import FollowUp from '../models/followUp';
 import FollUpService from './FollowUpService';
 import EmailMessageLogService from './EmailMessageLogService';
-import DialogFlowWebhookRequest from '../models/dialogFlowWebhookRequest';
+import ChatbotHistory from '../models/chatbotHistory';
 
 const sqs = new AWS.SQS({ region: process.env.USERPOOL_REGION });
 const QUEUE_URL = `https://sqs.${process.env.USERPOOL_REGION}.amazonaws.com/${process.env.ACCOUNT_ID}/${process.env.GENERATE_EMAIL_QUEUE_NAME}`;
@@ -103,8 +103,8 @@ class FulfillmentService {
 
   processDialogFlowWebhook = async req => {
     try {
-      const request = new DialogFlowWebhookRequest(...req.body);
-      request.save();
+      const history = new ChatbotHistory(...req.body);
+      history.save();
 
       return {
         fulfillmentText: 'Thank you for your input. It has been logged.',

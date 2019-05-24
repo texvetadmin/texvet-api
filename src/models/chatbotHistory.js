@@ -1,10 +1,10 @@
 /**
- * DialogFlowWebhookRequest model
+ * ChatbotHistory model
  */
 
 import mongoose from 'mongoose';
 
-const DialogFlowWebhookRequestSchema = new mongoose.Schema(
+const ChatbotHistorySchema = new mongoose.Schema(
   {
     responseId: String,
     session: String,
@@ -46,7 +46,7 @@ const DialogFlowWebhookRequestSchema = new mongoose.Schema(
 );
 
 // Increment the version number before we save to the datastore.
-DialogFlowWebhookRequestSchema.pre('save', function preSave(next) {
+ChatbotHistorySchema.pre('save', function preSave(next) {
   this.increment();
   next();
 });
@@ -55,11 +55,11 @@ let model;
 
 // try to get schema, and if it doesn't exist, establish it.
 try {
-  model = mongoose.model('DialogFlowWebhookRequest');
+  model = mongoose.model('ChatbotHistory');
 } catch (error) {
-  model = mongoose.model('DialogFlowWebhookRequest', DialogFlowWebhookRequestSchema);
+  model = mongoose.model('ChatbotHistory', ChatbotHistorySchema);
 }
 
-const DialogFlowWebhookRequestModel = model;
+const ChatbotHistoryModel = model;
 
-export default DialogFlowWebhookRequestModel;
+export default ChatbotHistoryModel;
