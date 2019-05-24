@@ -19,14 +19,14 @@ const NotificationTypeSchema = new mongoose.Schema(
     },
     template_name: {
       type: String,
-      ref: 'Template',
+      ref: 'NotificationTemplate',
     },
     requires_followup: {
       type: Boolean,
       default: false,
     },
-    followup_notification_type_id: {
-      type: Number,
+    followup_notification_type: {
+      type: String,
     },
     followup_interval: {
       type: Number,
