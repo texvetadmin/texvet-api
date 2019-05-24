@@ -5,6 +5,6 @@ import EmailController from '../../../controllers/EmailController';
 const router = express.Router();
 
 router.post('/send-email', EmailController.sendEmail);
-router.post('/dialogflow-webhook', FulfillmentController.saveMessage);
+router.post('/dialogflow-webhook', FulfillmentController.processDialogFlowWebhook);
 
 export default router;

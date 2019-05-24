@@ -47,12 +47,12 @@ class FulfillmentController {
     }
   };
 
-  saveMessage = async (req, res) => {
+  processDialogFlowWebhook = async (req, res) => {
     try {
-      const info = await this.fulfillmentService.saveMessage(req);
+      const info = await this.fulfillmentService.processDialogFlowWebhook(req);
       return success(res, info);
     } catch (err) {
-      logger.error(`[${this.constructor.name}.saveMessage] Error: ${err}`);
+      logger.error(`[${this.constructor.name}.processDialogFlowWebhook] Error: ${err}`);
       return fail(res, err);
     }
   };
