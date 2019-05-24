@@ -81,7 +81,7 @@ describe('NotificationType Controller Test', () => {
         code: 'SET-APPOINTMENT',
         name: 'Type #1',
         description: 'Description test',
-        template_id: '1',
+        template_name: 'transcript',
       };
 
       notificationTypeController.notificationTypeService.createType.resolves(createTypeData);
@@ -105,7 +105,7 @@ describe('NotificationType Controller Test', () => {
         code: 'SET-APPOINTMENT',
         name: 'Type #1',
         description: 'Description test',
-        template_id: '1',
+        template_name: 'transcript',
       };
 
       const updated = {
@@ -113,7 +113,7 @@ describe('NotificationType Controller Test', () => {
         code: 'APPOINTMENT-REMINDER',
         name: 'Type #2',
         description: 'Description test',
-        template_id: '2',
+        template_name: 'transcript',
       };
 
       updatedTypeData = {
