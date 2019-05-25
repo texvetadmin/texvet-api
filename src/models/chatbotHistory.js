@@ -10,9 +10,9 @@ const ChatbotHistorySchema = new mongoose.Schema(
     session: String,
     queryResult: {
       queryText: String,
-      parameters: {
+      parameters: [{
         param: String,
-      },
+      }],
       allRequiredParamsPresent: Boolean,
       fulfillmentText: String,
       fulfillmentMessages: [
@@ -26,9 +26,9 @@ const ChatbotHistorySchema = new mongoose.Schema(
         {
           name: String,
           lifespanCount: Number,
-          parameters: {
+          parameters: [{
             param: String,
-          },
+          }],
         },
       ],
       intent: {
