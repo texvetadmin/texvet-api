@@ -7,6 +7,7 @@ import organizations from '../../seed/data/organization/organizations';
 import FollowUp from '../models/followUp';
 import FollUpService from './FollowUpService';
 import EmailMessageLogService from './EmailMessageLogService';
+import ChatbotHistory from '../models/chatbotHistory';
 
 const sqs = new AWS.SQS({ region: process.env.USERPOOL_REGION });
 const QUEUE_URL = `https://sqs.${process.env.USERPOOL_REGION}.amazonaws.com/${process.env.ACCOUNT_ID}/${process.env.GENERATE_EMAIL_QUEUE_NAME}`;
@@ -97,6 +98,72 @@ class FulfillmentService {
     } catch (err) {
       logger.error(`[${this.constructor.name}.closeTheLoop] Error: ${err}`);
       callback(err);
+    }
+  };
+
+  processDialogFlowWebhook = async req => {
+    try {
+      const history = new ChatbotHistory(...req.body);
+      history.save();
+
+      return {
+        fulfillmentText: 'Thank you for your input. It has been logged.',
+        fulfillmentMessages: [
+          {
+            card: {
+              title: 'card title',
+              subtitle: 'card text',
+              imageUri: 'https://assistant.google.com/static/images/molecule/Molecule-Formation-stop.png',
+              buttons: [
+                {
+                  text: 'button text',
+                  postback: 'https://assistant.google.com/',
+                },
+              ],
+            },
+          },
+        ],
+        source: 'example.com',
+        payload: {
+          google: {
+            expectUserResponse: true,
+            richResponse: {
+              items: [
+                {
+                  simpleResponse: {
+                    textToSpeech: 'this is a simple response',
+                  },
+                },
+              ],
+            },
+          },
+          facebook: {
+            text: 'Hello, Facebook!',
+          },
+          slack: {
+            text: 'This is a text response for Slack.',
+          },
+        },
+        outputContexts: [
+          {
+            name: 'projects/${PROJECT_ID}/agent/sessions/${SESSION_ID}/contexts/context name',
+            lifespanCount: 5,
+            parameters: {
+              param: 'param value',
+            },
+          },
+        ],
+        followupEventInput: {
+          name: 'event name',
+          languageCode: 'en-US',
+          parameters: {
+            param: 'param value',
+          },
+        },
+      };
+    } catch (err) {
+      logger.error(`[${this.constructor.name}.processDialogFlowWebhook] Error: ${err}`);
+      throw err;
     }
   };
 }
