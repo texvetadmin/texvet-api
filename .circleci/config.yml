@@ -88,6 +88,7 @@ jobs:
 
     steps:
       - deploy-setup-dependencies
+      - run: npm run rollup -c
       - run: npm run seed:development
       - run:
           command: node_modules/.bin/serverless deploy --verbose --stage development --region us-east-1 --package ./.serverless
@@ -99,6 +100,7 @@ jobs:
 
     steps:
       - deploy-setup-dependencies
+      - run: npm run rollup -c
       - run: npm run seed:staging
       - run:
           command: node_modules/.bin/serverless deploy --verbose --stage staging --region us-east-1 --package ./.serverless
@@ -110,6 +112,7 @@ jobs:
 
     steps:
       - deploy-setup-dependencies
+      - run: npm run rollup -c
       - run: npm run seed:demo
       - run:
           command: node_modules/.bin/serverless deploy --verbose --stage demo --region us-east-1 --package ./.serverless
@@ -121,6 +124,7 @@ jobs:
 
     steps:
       - deploy-setup-dependencies
+      - run: npm run rollup -c
       - run: npm run seed:production
       - run:
           command: node_modules/.bin/serverless deploy --verbose --stage production --region us-east-1 --package ./.serverless
