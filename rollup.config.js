@@ -5,10 +5,8 @@ import commonJS from 'rollup-plugin-commonjs';
 const plugins = targets => ([
   babel({
     exclude: 'node_modules/**',
-    babelrc: false,
-    // presets: [['env', { modules: false, targets }]],
-    // plugins: ['babel-plugin-transform-object-rest-spread'],
     comments: false,
+    runtimeHelpers: true,
   }),
   resolve(),
   commonJS({
@@ -20,12 +18,10 @@ const external = ['mongoose']; // e.g. ['axios']
 
 export default [{
   input: 'seed/seeder.js',
-  // output configuration
   output: {
-    file: 'dist/bundle.seeder.esm.js',
-    format: 'esm',
+    file: 'dist/bundle.seeder.cjs.js',
+    format: 'cjs',
   },
   external,
-  // build es modules for node 8
   plugins: plugins({ node: '8' }),
 }];
