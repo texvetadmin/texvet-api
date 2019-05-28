@@ -30,10 +30,9 @@ class FulfillmentService {
     try {
       const {
         params: { slug },
-        body: { type, value },
+        body: { location },
       } = req;
-      const county = slug.split('/')[1];
-      const url = `${process.env.PROJECT_URL}/rest/v1/fulfillments/services/${county}`;
+      const url = `${process.env.PROJECT_URL}/rest/v1/fulfillments/services/${location}`;
       const resp = await fetch(url);
       const response = await resp.json();
       return response.map(data => ({
