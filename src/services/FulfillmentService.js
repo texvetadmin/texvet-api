@@ -32,7 +32,8 @@ class FulfillmentService {
         params: { slug },
         body: { location },
       } = req;
-      const url = `${process.env.PROJECT_URL}/rest/v1/fulfillments/services/${location}`;
+      const county = location ? location.toUpperCase() : '';
+      const url = `${process.env.PROJECT_URL}/rest/v1/fulfillments/services/${county}`;
       const resp = await fetch(url);
       const response = await resp.json();
       return response.map(data => ({
