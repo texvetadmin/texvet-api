@@ -1,10 +1,8 @@
 /* eslint-disable no-unused-vars */
 import AWS from 'aws-sdk';
 import fetch from 'node-fetch';
-import { DOMAINS } from '../constants';
 import logger from '../utils/logger';
 import staticResources from '../models/staticResources';
-// import referrals from '../../collections/referral/data';
 import organizations from '../../collections/organization/data';
 import FollowUp from '../models/followUp';
 import FollUpService from './FollowUpService';
@@ -47,11 +45,14 @@ class FulfillmentService {
     try {
       const {
         params: { slug },
-        body: { type, value },
       } = req;
-      const url = `${DOMAINS[node.env.NODE_ENV]}/rest/v1/fulfillments/referrals/${slug.zipCode}`;
-      // TODO: get items by slug,type and value
 
+      const requestParams = {
+        type: slug.split('/')[1] || '',
+        county: slug.split('/')[2] || '',
+      };
+      const searchValue = Object.values(requestParams).join('/');
+      const url = `${node.env.PROJECT_URL}/rest/v1/fulfillments/referrals/${searchValue}`;
       const resp = await fetch(url);
       const response = await resp.json();
       return response.map(data => ({
