@@ -45,11 +45,12 @@ class FulfillmentService {
     try {
       const {
         params: { slug },
+        body: { location },
       } = req;
 
       const requestParams = {
         type: slug.split('/')[1] || '',
-        county: slug.split('/')[2] || '',
+        county: location || '',
       };
       const searchValue = Object.values(requestParams).join('/');
       const url = `${node.env.PROJECT_URL}/rest/v1/fulfillments/referrals/${searchValue}`;
