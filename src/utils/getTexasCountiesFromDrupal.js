@@ -2,6 +2,9 @@ import fetch from 'node-fetch';
 import County from '../models/county';
 
 const fs = require('fs');
+const resolve = require('path').resolve;
+
+const collectionsPath = resolve(__dirname, '../../', 'collections', 'counties');
 
 const drupalUrl = process.env.DRUPAL_URL || 'http://inventive-d8-txc.pantheonsite.io';
 const url = `${drupalUrl}/rest/v1/content/resources/counties`;
@@ -29,7 +32,7 @@ const getCounties = async () => {
     });
   });
 
-  fs.writeFile('data.js', JSON.stringify(counties), error => {
+  fs.writeFile(`${collectionsPath}/data.js`, JSON.stringify(counties), error => {
     if (error) {
       throw error;
     }
