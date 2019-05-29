@@ -7,6 +7,7 @@ import staticResources from '../models/staticResources';
 import referrals from '../../collections/referral/data';
 import FollowUp from '../models/followUp';
 import FollUpService from './FollowUpService';
+// import County from '../models/county';
 import EmailMessageLogService from './EmailMessageLogService';
 
 const sqs = new AWS.SQS({ region: process.env.USERPOOL_REGION });
@@ -33,7 +34,13 @@ class FulfillmentService {
         body: { location },
       } = req;
       const county = location ? location.toUpperCase() : '';
-      const url = `${process.env.PROJECT_URL}/rest/v1/fulfillments/services/${county}`;
+      // const countyId = async () => {
+      // const county = await County.findOne({ name: location.toUpperCase() }).exec();
+      // return county.id;
+      // }
+
+      const url = `${process.env.DRUPAL_URL}/rest/v1/fulfillments/services/${county}`;
+
       const resp = await fetch(url);
       const response = await resp.json();
       return response.map(data => ({
@@ -53,9 +60,10 @@ class FulfillmentService {
         params: { slug },
         body: { type, value },
       } = req;
-
-      // TODO: get items by slug,type and value
-
+      // const countyId = async () => {
+      // const county = await County.findOne({ name: location.toUpperCase() }).exec();
+      // return county.id;
+      // }
       return referrals;
     } catch (err) {
       logger.error(`[${this.constructor.name}.getReferralsBySlug] Error: ${err}`);
