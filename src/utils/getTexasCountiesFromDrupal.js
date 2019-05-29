@@ -1,6 +1,5 @@
 import fetch from 'node-fetch';
 import County from '../models/county';
-import db from '../mongoose';
 
 const fs = require('fs');
 
@@ -33,14 +32,6 @@ const getCounties = async () => {
   fs.writeFile('data.js', JSON.stringify(counties), error => {
     if (error) {
       throw error;
-    }
-  });
-  db.collection('counties').insertMany(counties, (err, res) => {
-    if (err) {
-      throw err;
-    } else {
-      console.log('Counties inserted');
-      db.close();
     }
   });
   return counties;
