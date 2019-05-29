@@ -9,7 +9,6 @@ const collectionsPath = path.resolve(__dirname, 'collections');
 
 const config = {
   database: process.env.MONGODB_URI,
-  dropDatabase: true,
   dropCollections: true,
 };
 

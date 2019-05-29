@@ -2,6 +2,8 @@ import fetch from 'node-fetch';
 import County from '../models/county';
 import db from '../mongoose';
 
+const fs = require('fs');
+
 const drupalUrl = process.env.DRUPAL_URL || 'http://inventive-d8-txc.pantheonsite.io';
 const url = `${drupalUrl}/rest/v1/content/resources/counties`;
 
@@ -27,7 +29,13 @@ const getCounties = async () => {
       relatedCities,
     });
   });
-  db.collection('Counties').insertMany(counties, (err, res) => {
+
+  fs.writeFile('data.js', JSON.stringify(counties), error => {
+    if (error) {
+      throw error;
+    }
+  });
+  db.collection('counties').insertMany(counties, (err, res) => {
     if (err) {
       throw err;
     } else {
