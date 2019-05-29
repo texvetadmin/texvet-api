@@ -48,12 +48,9 @@ class FulfillmentService {
         body: { location },
       } = req;
 
-      const requestParams = {
-        type: slug.split('/')[1] || '',
-        county: location || '',
-      };
-      const searchValue = Object.values(requestParams).join('/');
-      const url = `${node.env.PROJECT_URL}/rest/v1/fulfillments/referrals/${searchValue}`;
+      const type = slug.split('/')[1] || '';
+      const county = location.toUpperCase() || '';
+      const url = `${process.env.DRUPAL_URL}/rest/v1/fulfillments/referrals/${type}/${county}`;
       const resp = await fetch(url);
       const response = await resp.json();
       return response.map(data => ({
