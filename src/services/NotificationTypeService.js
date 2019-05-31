@@ -4,7 +4,7 @@ import NotificationType from '../models/notificationType';
 import logger from '../utils/logger';
 import { ApiError } from '../utils/errors';
 
-const notificationTypesFilters = ['_id', 'name', 'description', 'template_name', 'version'];
+const notificationTypesFilters = ['_id', 'name', 'description', 'name', 'version'];
 
 class NotificationTypeService {
   getTypes = async req => {
@@ -37,10 +37,10 @@ class NotificationTypeService {
   getType = async req => {
     try {
       const {
-        params: { template_name },
+        params: { name },
       } = req;
 
-      return NotificationType.findOne({ template_name });
+      return NotificationType.findOne({ name });
     } catch (err) {
       logger.error(`[${this.constructor.name}.getType] Error: ${err}`);
       throw err;
@@ -54,7 +54,7 @@ class NotificationTypeService {
         'name',
         'code',
         'description',
-        'template_name',
+        'name',
         'requires_followup',
         'followup_notification_type',
         'followup_interval',
@@ -71,11 +71,11 @@ class NotificationTypeService {
   updateType = async req => {
     try {
       const {
-        params: { template_name },
+        params: { name },
         body: typeData,
       } = req;
 
-      const type = await NotificationType.findOne({ template_name }).exec();
+      const type = await NotificationType.findOne({ name }).exec();
 
       const { version: currentVersion } = type;
       const { version } = typeData;
@@ -95,10 +95,10 @@ class NotificationTypeService {
   deleteType = async req => {
     try {
       const {
-        params: { template_name },
+        params: { name },
       } = req;
 
-      const type = await NotificationType.findOne({ template_name }).exec();
+      const type = await NotificationType.findOne({ name }).exec();
 
       if (!type) {
         throw new ApiError({ message: '404 Notification Type Not Found', statusCode: 404 });
