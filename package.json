@@ -45,6 +45,7 @@
     "mongo-seeding": "3.0.*",
     "mongoose": "5.4.*",
     "mustache": "^3.0.1",
+    "node-fetch": "2.6.0",
     "node-yaml-config": "0.0.*",
     "pino": "5.9.*",
     "pino-pretty": "2.4.*",

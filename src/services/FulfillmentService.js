@@ -1,9 +1,8 @@
 /* eslint-disable no-unused-vars */
 import AWS from 'aws-sdk';
+import fetch from 'node-fetch';
 import logger from '../utils/logger';
 import staticResources from '../models/staticResources';
-import referrals from '../../seed/data/referral/referral';
-import organizations from '../../seed/data/organization/organizations';
 import FollowUp from '../models/followUp';
 import FollUpService from './FollowUpService';
 import EmailMessageLogService from './EmailMessageLogService';
@@ -35,7 +34,7 @@ class FulfillmentService {
 
       // TODO: get items by slug,type and value
 
-      return organizations;
+      return [];
     } catch (err) {
       logger.error(`[${this.constructor.name}.getServicesBySlug] Error: ${err}`);
       throw err;
@@ -46,12 +45,21 @@ class FulfillmentService {
     try {
       const {
         params: { slug },
-        body: { type, value },
+        body: { location },
       } = req;
 
-      // TODO: get items by slug,type and value
-
-      return referrals;
+      const type = slug.split('/')[1] || '';
+      const county = location.toUpperCase() || '';
+      const url = `${process.env.DRUPAL_URL}/rest/v1/fulfillments/referrals/${type}/${county}`;
+      const resp = await fetch(url);
+      const response = await resp.json();
+      return response.map(data => ({
+        organization: data.title || null,
+        title: data.field_partner_contact_title || null,
+        phone: data.field_phone || null,
+        email: data.field_email || null,
+        additional_email: data.field_persons_direct_work_email || null,
+      }));
     } catch (err) {
       logger.error(`[${this.constructor.name}.getReferralsBySlug] Error: ${err}`);
       throw err;

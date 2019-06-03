@@ -12,9 +12,9 @@ require('../config');
 
 const readFile = util.promisify(fs.readFile);
 
-const SUBJECTS_PATH = './src/subjects';
-const TEMPLATES_PATH = './src/templates';
-const envConfig = yamlConfig.load('./env.yml');
+const SUBJECTS_PATH = './templates/subject';
+const TEMPLATES_PATH = './templates/body';
+const envConfig = yamlConfig.load('../env.yml');
 const mongoDB = envConfig.MONGODB_URI;
 
 function seedTemplates() {
