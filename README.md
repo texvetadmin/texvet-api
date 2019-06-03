@@ -28,6 +28,10 @@ The AWS CLI should be installed and configured on your local machine.
 
 - Make the project profile the default for your aws-cli commands
 
+  ```bash
+  export AWS_PROFILE=`texvet`
+  ```
+
 ### Docker
 
 Install [Docker](https://www.docker.com/) if you don't already have it.
