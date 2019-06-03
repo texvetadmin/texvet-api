@@ -9,7 +9,7 @@
     "build:production": "sls package --stage production",
     "build:staging": "sls package --stage staging",
     "compose": "docker-compose -f ./database/docker-compose.yml up -d ",
-    "seed:local": "node_modules/.bin/cross-env npm run compose && npm run rollup -c && node ./dist/bundle.seeder.cjs.js",
+    "seed:local": "node_modules/.bin/cross-env npm run compose && npm run rollup && node ./dist/bundle.seeder.cjs.js",
     "seed:demo": "npm run rollup -c && NODE_ENV=demo node ./dist/bundle.seeder.cjs.js",
     "seed:development": "npm run rollup -c && NODE_ENV=development node ./dist/seeder.cjs.js",
     "seed:production": "npm run rollup -c && NODE_ENV=production node ./dist/seeder.cjs.js",
