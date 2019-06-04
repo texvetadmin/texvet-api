@@ -2,7 +2,7 @@
 import AWS from 'aws-sdk';
 import fetch from 'node-fetch';
 import logger from '../utils/logger';
-import { operationHoursFormatter } from '../utils/helpers';
+import operationHoursFormatter from '../utils/helpers';
 import staticResources from '../models/staticResources';
 import FollowUp from '../models/followUp';
 import FollUpService from './FollowUpService';
@@ -161,6 +161,7 @@ class FulfillmentService {
         },
         outputContexts: [
           {
+            // eslint-disable-next-line no-template-curly-in-string
             name: 'projects/${PROJECT_ID}/agent/sessions/${SESSION_ID}/contexts/context name',
             lifespanCount: 5,
             parameters: {
