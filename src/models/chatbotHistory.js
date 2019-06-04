@@ -1,8 +1,7 @@
 /**
  * ChatbotHistory model
  */
-
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const ChatbotHistorySchema = new mongoose.Schema(
   {
@@ -10,9 +9,11 @@ const ChatbotHistorySchema = new mongoose.Schema(
     session: String,
     queryResult: {
       queryText: String,
-      parameters: [{
-        param: String,
-      }],
+      parameters: [
+        {
+          param: String,
+        },
+      ],
       allRequiredParamsPresent: Boolean,
       fulfillmentText: String,
       fulfillmentMessages: [
@@ -26,9 +27,11 @@ const ChatbotHistorySchema = new mongoose.Schema(
         {
           name: String,
           lifespanCount: Number,
-          parameters: [{
-            param: String,
-          }],
+          parameters: [
+            {
+              param: String,
+            },
+          ],
         },
       ],
       intent: {
@@ -62,4 +65,4 @@ try {
 
 const ChatbotHistoryModel = model;
 
-export default ChatbotHistoryModel;
+module.exports = ChatbotHistoryModel;

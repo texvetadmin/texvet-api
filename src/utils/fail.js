@@ -1,4 +1,5 @@
-import { get } from 'lodash';
+// import { get } from 'lodash';
+const { get } = require('lodash');
 
 const fail = (res, err) => {
   let body = get(err, 'body') || get(err, 'message') || err;
@@ -12,5 +13,5 @@ const fail = (res, err) => {
 
   return res.status(code).send(body);
 };
-
-export default fail;
+module.exports = { fail };
+// export default fail;

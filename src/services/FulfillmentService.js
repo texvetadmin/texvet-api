@@ -3,7 +3,6 @@ import AWS from 'aws-sdk';
 import fetch from 'node-fetch';
 import logger from '../utils/logger';
 import staticResources from '../models/staticResources';
-import organizations from '../../collections/organization/data';
 import FollowUp from '../models/followUp';
 import FollUpService from './FollowUpService';
 import EmailMessageLogService from './EmailMessageLogService';
@@ -35,7 +34,7 @@ class FulfillmentService {
 
       // TODO: get items by slug,type and value
 
-      return organizations;
+      return [];
     } catch (err) {
       logger.error(`[${this.constructor.name}.getServicesBySlug] Error: ${err}`);
       throw err;

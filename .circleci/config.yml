@@ -44,7 +44,7 @@ jobs:
     steps:
       - setup-dependencies
       - run: npm run test:unit
-      - run: npm run build
+      - run: npm run build:development
       - persist_to_workspace:
           root: .
           paths: .serverless
@@ -74,7 +74,7 @@ jobs:
 
     steps:
       - setup-dependencies
-      - run: npm run build:prod
+      - run: npm run build:production
       - persist_to_workspace:
           root: .
           paths: .serverless
@@ -84,40 +84,44 @@ jobs:
 
     steps:
       - deploy-setup-dependencies
+      - run: npm run seed:development
       - run:
           command: node_modules/.bin/serverless deploy --verbose --stage development --region us-east-1 --package ./.serverless
           environment:
-            SLS_DEBUG: "*"
+            SLS_DEBUG: '*'
 
   deploy-staging:
     executor: node8
 
     steps:
       - deploy-setup-dependencies
+      - run: npm run seed:staging
       - run:
           command: node_modules/.bin/serverless deploy --verbose --stage staging --region us-east-1 --package ./.serverless
           environment:
-            SLS_DEBUG: "*"
+            SLS_DEBUG: '*'
 
   deploy-demo:
     executor: node8
 
     steps:
       - deploy-setup-dependencies
+      - run: npm run seed:demo
       - run:
           command: node_modules/.bin/serverless deploy --verbose --stage demo --region us-east-1 --package ./.serverless
           environment:
-            SLS_DEBUG: "*"
+            SLS_DEBUG: '*'
 
   deploy-production:
     executor: node8
 
     steps:
       - deploy-setup-dependencies
+      - run: npm run seed:production
       - run:
           command: node_modules/.bin/serverless deploy --verbose --stage production --region us-east-1 --package ./.serverless
           environment:
-            SLS_DEBUG: "*"
+            SLS_DEBUG: '*'
 
 workflows:
   version: 2

@@ -1,8 +1,9 @@
-import { pick, map } from 'lodash';
+// import { pick, map } from 'lodash';
+const { pick, map } = require('lodash');
 
-export const escapeRegex = searchQuery => searchQuery.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+const escapeRegex = searchQuery => searchQuery.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 
-export const getListFilters = (fields, req) => {
+const getListFilters = (fields, req) => {
   const { query } = req;
   return map(pick(query, fields), (val, field) => ({
     // eslint-disable-next-line security/detect-non-literal-regexp
@@ -10,10 +11,12 @@ export const getListFilters = (fields, req) => {
   }));
 };
 
-export const getListNumericFilters = (fields, req) => {
+const getListNumericFilters = (fields, req) => {
   const { query } = req;
   return map(pick(query, fields), (val, field) => ({
     // eslint-disable-next-line security/detect-non-literal-regexp
     [field]: parseInt(val, 10),
   }));
 };
+
+module.exports = { escapeRegex, getListFilters, getListNumericFilters };
