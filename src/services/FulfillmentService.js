@@ -32,9 +32,7 @@ class FulfillmentService {
         params: { slug },
         body: { location },
       } = req;
-      const type = slug.split('/')[1] || '';
-      const county = location || '';
-      const url = `${process.env.DRUPAL_URL}/rest/v1/fulfillments/services/${type}/${county}`;
+      const url = `${process.env.DRUPAL_URL}/rest/v1/content/resources/services/${slug}`;
       const resp = await fetch(url);
       const response = await resp.json();
       return response.map(data => ({
