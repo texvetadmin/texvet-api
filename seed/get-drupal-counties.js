@@ -1,10 +1,9 @@
-import fetch from 'node-fetch';
-import County from '../models/county';
+const fetch = require('node-fetch');
 
 const fs = require('fs');
 const resolve = require('path').resolve;
 
-const collectionsPath = resolve(__dirname, '../../', 'collections', 'counties');
+const collectionsPath = resolve(__dirname, 'data', 'counties');
 
 const drupalUrl = process.env.DRUPAL_URL || 'http://inventive-d8-txc.pantheonsite.io';
 const url = `${drupalUrl}/rest/v1/content/resources/counties`;
@@ -23,20 +22,22 @@ const getCounties = async () => {
         name,
       };
     });
-    return new County({
+    return {
       id,
       uuid,
       name,
       cities: county.city,
       relatedCities,
-    });
+    };
   });
-
-  fs.writeFile(`${collectionsPath}/data.js`, JSON.stringify(counties), error => {
+  if (!fs.existsSync(collectionsPath)) {
+    fs.mkdirSync(collectionsPath);
+  }
+  const content = `module.exports = ${JSON.stringify(counties)}`;
+  fs.writeFile(`${collectionsPath}/data.js`, content, error => {
     if (error) {
       throw error;
     }
   });
-  return counties;
 };
 getCounties();
