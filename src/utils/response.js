@@ -1,13 +1,14 @@
-import { isArray } from 'lodash';
+// import { isArray } from 'lodash';
+const { isArray } = require('lodash');
 
-export const makeUpdatedResponse = (original, updated) => ({
+const makeUpdatedResponse = (original, updated) => ({
   data: {
     original,
     updated,
   },
 });
 
-export const makeArray = (req, data, itemCount) => {
+const makeArray = (req, data, itemCount) => {
   const {
     query: { limit, skip = 0, page = 1 },
   } = req;
@@ -23,12 +24,12 @@ export const makeArray = (req, data, itemCount) => {
   };
 };
 
-export const makeObject = (req, data) => ({
+const makeObject = (req, data) => ({
   object: 'object',
   data,
 });
 
-export const makePaginatedResponse = (req, data, itemCount) => {
+const makePaginatedResponse = (req, data, itemCount) => {
   if (isArray(data)) {
     return makeArray(req, data, itemCount);
   }
@@ -37,7 +38,9 @@ export const makePaginatedResponse = (req, data, itemCount) => {
   return makeObject(req, data);
 };
 
-export const success = (res, message = '', code = 200) => res.status(code).send({
+const success = (res, message = '', code = 200) => res.status(code).send({
   statusCode: code,
   message,
 });
+
+module.exports = { makeUpdatedResponse, makeArray, makeObject, makePaginatedResponse, success };

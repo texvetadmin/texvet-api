@@ -1,19 +1,21 @@
 /**
  * FollowUp model
  */
-
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
+// import mongoose from 'mongoose';
 
 const FollowUpSchema = new mongoose.Schema(
   {
-    recipients: [{
-      name: {
-        type: String,
+    recipients: [
+      {
+        name: {
+          type: String,
+        },
+        email: {
+          type: String,
+        },
       },
-      email: {
-        type: String,
-      },
-    }],
+    ],
     notification_type: {
       type: String,
     },
@@ -44,5 +46,4 @@ try {
 }
 
 const FollowUpModel = model;
-
-export default FollowUpModel;
+module.exports = FollowUpModel;
