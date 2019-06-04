@@ -11,7 +11,7 @@ const argv = require('yargs').argv;
 
 const envKey = argv.stage || 'default';
 
-const envPath = resolve(__dirname, '..', 'env.yml');
+const envPath = resolve(__dirname, 'env.yml');
 
 const config = yamlConfig.load(envPath, envKey);
 

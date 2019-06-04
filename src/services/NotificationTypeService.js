@@ -4,7 +4,7 @@ import NotificationType from '../models/notificationType';
 import logger from '../utils/logger';
 import { ApiError } from '../utils/errors';
 
-const notificationTypesFilters = ['_id', 'name', 'description', 'template_id', 'version'];
+const notificationTypesFilters = ['_id', 'name', 'description', 'template_name', 'version'];
 
 class NotificationTypeService {
   getTypes = async req => {
@@ -54,7 +54,7 @@ class NotificationTypeService {
         'name',
         'code',
         'description',
-        'template_id',
+        'template_name',
         'requires_followup',
         'followup_notification_type',
         'followup_interval',

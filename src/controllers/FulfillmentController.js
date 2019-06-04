@@ -46,6 +46,16 @@ class FulfillmentController {
       callback(err);
     }
   };
+
+  processDialogFlowWebhook = async (req, res) => {
+    try {
+      const info = await this.fulfillmentService.processDialogFlowWebhook(req);
+      return success(res, info);
+    } catch (err) {
+      logger.error(`[${this.constructor.name}.processDialogFlowWebhook] Error: ${err}`);
+      return fail(res, err);
+    }
+  };
 }
 
 export default new FulfillmentController();
