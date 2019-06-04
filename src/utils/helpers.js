@@ -1,3 +1,4 @@
+/* eslint-disable security/detect-object-injection */
 const operationHoursFormatter = data => {
   const days = Object.keys(data).filter(key => key.indexOf('hours') !== -1);
   return days.map(item => {
@@ -12,4 +13,4 @@ const operationHoursFormatter = data => {
   });
 };
 
-export { operationHoursFormatter };
+export default operationHoursFormatter;

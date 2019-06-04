@@ -1,5 +1,4 @@
 import AWS from 'aws-sdk';
-import mongoose from 'mongoose';
 import Mustache from 'mustache';
 import sgMail from '@sendgrid/mail';
 import logger from '../utils/logger';
