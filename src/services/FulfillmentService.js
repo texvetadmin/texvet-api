@@ -2,6 +2,7 @@
 import AWS from 'aws-sdk';
 import fetch from 'node-fetch';
 import logger from '../utils/logger';
+import { operationHoursFormatter } from '../utils/helpers';
 import staticResources from '../models/staticResources';
 import FollowUp from '../models/followUp';
 import FollUpService from './FollowUpService';
@@ -29,12 +30,18 @@ class FulfillmentService {
     try {
       const {
         params: { slug },
-        body: { type, value },
+        body: { location },
       } = req;
+      const county = location.toUpperCase() || '';
 
-      // TODO: get items by slug,type and value
-
-      return [];
+      const url = `${process.env.DRUPAL_URL}/rest/v1/content/resources/services/${slug}/${county}`;
+      const resp = await fetch(url);
+      const response = await resp.json();
+      return response.map(data => ({
+        name: data.title || null,
+        phone: data.field_phone || null,
+        hoursOfOperation: operationHoursFormatter(data),
+      }));
     } catch (err) {
       logger.error(`[${this.constructor.name}.getServicesBySlug] Error: ${err}`);
       throw err;
