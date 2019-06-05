@@ -1,8 +1,8 @@
 /**
  * EmailMessageLog model
  */
-
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
+// import mongoose from 'mongoose';
 
 const EmailMessageLogSchema = new mongoose.Schema(
   {
@@ -55,4 +55,5 @@ try {
 
 const EmailMessageLogModel = model;
 
-export default EmailMessageLogModel;
+module.exports = { EmailMessageLogModel };
+// export default EmailMessageLogModel;

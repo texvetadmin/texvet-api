@@ -37,7 +37,7 @@ The AWS CLI should be installed and configured on your local machine.
 Install [Docker](https://www.docker.com/) if you don't already have it.
 You should have, at a minimum, Docker Engine 18.06 and Docker Compose 1.22 installed and configured.
 
-----
+---
 
 ## Local Development
 
@@ -60,11 +60,11 @@ This project make the following assumptions about the infrastructure:
 
 ### Creating the API domain names
 
-This *one-time* activity allows the project to use named domains for the API instead of the auto-generated API Gateway names.
+This _one-time_ activity allows the project to use named domains for the API instead of the auto-generated API Gateway names.
 This is accomplished by using the [serverless-domain-manager](https://github.com/amplify-education/serverless-domain-manager) plugin.
 After running `npm install`, check the serverless.yml `domains` configuration to ensure the names match the environments defined in the infrastructure project.
 To initialize the domains run the following command for each domain and replace {STAGE_NAME} with the appropriate stage.
 
-  ```bash
-  ./node_modules/serverless/bin/serverless create_domain --stage {STAGE_NAME}
-  ```
+```bash
+./node_modules/serverless/bin/serverless create_domain --stage {STAGE_NAME}
+```

@@ -1,5 +1,4 @@
 import AWS from 'aws-sdk';
-import mongoose from 'mongoose';
 import Mustache from 'mustache';
 import sgMail from '@sendgrid/mail';
 import logger from '../utils/logger';
@@ -46,7 +45,7 @@ class SQSService {
         .findOne({ code: queueMessage.type })
         .exec();
       const template = await NotificationTemplateModel
-        .findOne({ _id: mongoose.Types.ObjectId(type.template_id) })
+        .findOne({ name: type.template_name })
         .exec();
 
       const generatedSubject = Mustache.render(template.subject, queueMessage.data);

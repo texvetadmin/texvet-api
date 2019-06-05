@@ -1,8 +1,8 @@
 /**
  * NotificationType model
  */
-
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
+// import mongoose from 'mongoose';
 
 const NotificationTypeSchema = new mongoose.Schema(
   {
@@ -17,8 +17,8 @@ const NotificationTypeSchema = new mongoose.Schema(
     description: {
       type: String,
     },
-    template_id: {
-      type: mongoose.Schema.Types.ObjectId,
+    template_name: {
+      type: String,
       ref: 'NotificationTemplate',
     },
     requires_followup: {
@@ -50,5 +50,4 @@ try {
 }
 
 const NotificationTypeModel = model;
-
-export default NotificationTypeModel;
+module.exports = NotificationTypeModel;
