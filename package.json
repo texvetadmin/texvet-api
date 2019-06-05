@@ -10,6 +10,7 @@
     "build:staging": "sls package --stage staging",
     "compose": "docker-compose -f ./database/docker-compose.yml up -d ",
     "import:counties": "node seed/get-drupal-counties.js",
+    "import:service-categories": "node seed/get-drupal-service-categories.js",
     "seed:local": "node_modules/.bin/cross-env npm run compose && node seed/seeder.js",
     "seed:demo": "NODE_ENV=demo node seed/seeder.js",
     "seed:development": "NODE_ENV=development node seed/seeder.js",
