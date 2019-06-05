@@ -2,7 +2,7 @@ const fetch = require('node-fetch');
 const fs = require('fs');
 const resolve = require('path').resolve;
 
-const collectionsPath = resolve(__dirname, 'data', 'services');
+const collectionsPath = resolve(__dirname, 'data', 'serviceCategories');
 
 const drupalUrl = process.env.DRUPAL_URL || 'http://inventive-d8-txc.pantheonsite.io';
 const url = `${drupalUrl}/rest/v1/content/resources/categories`;
@@ -29,13 +29,12 @@ const getServices = async () => {
   if (!fs.existsSync(collectionsPath)) {
     fs.mkdirSync(collectionsPath);
   }
-  const content = `module.exports = ${JSON.stringify(categories)}`;
+  const content = `module.exports = ${JSON.stringify(categories, null, 2)}`;
   fs.writeFile(`${collectionsPath}/data.js`, content, error => {
     if (error) {
       throw error;
     }
   });
 };
+
 getServices();
-
-

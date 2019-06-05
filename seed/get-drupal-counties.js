@@ -33,11 +33,12 @@ const getCounties = async () => {
   if (!fs.existsSync(collectionsPath)) {
     fs.mkdirSync(collectionsPath);
   }
-  const content = `module.exports = ${JSON.stringify(counties)}`;
+  const content = `module.exports = ${JSON.stringify(counties, null, 2)}`;
   fs.writeFile(`${collectionsPath}/data.js`, content, error => {
     if (error) {
       throw error;
     }
   });
 };
+
 getCounties();
