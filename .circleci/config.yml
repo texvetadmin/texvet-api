@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  newman: postman/newman@1.0.0
+
 executors:
   node8:
     docker:
@@ -123,6 +126,42 @@ jobs:
           environment:
             SLS_DEBUG: '*'
 
+  test-development:
+    executor: newman/postman-newman-docker
+    steps:
+      - checkout
+      - newman/newman-run:
+          collection: ./tests/texvet-api.json
+          environment: ./test/texvet-env-development.json
+          timeout: '1000'
+
+  test-staging:
+    executor: newman/postman-newman-docker
+    steps:
+      - checkout
+      - newman/newman-run:
+          collection: ./tests/texvet-api.json
+          environment: ./test/texvet-env-staging.json
+          timeout: '1000'
+
+  test-demo:
+    executor: newman/postman-newman-docker
+    steps:
+      - checkout
+      - newman/newman-run:
+          collection: ./tests/texvet-api.json
+          environment: ./test/texvet-env-demo.json
+          timeout: '1000'
+
+  test-production:
+    executor: newman/postman-newman-docker
+    steps:
+      - checkout
+      - newman/newman-run:
+          collection: ./tests/texvet-api.json
+          environment: ./test/texvet-env-production.json
+          timeout: '1000'
+
 workflows:
   version: 2
   build-and-deploy:
@@ -134,6 +173,12 @@ workflows:
       - deploy-development:
           requires:
             - build-development
+          filters:
+            branches:
+              only: master
+      - test-development:
+          requires:
+            - deploy-development
           filters:
             branches:
               only: master
