@@ -118,7 +118,7 @@ class FulfillmentService {
 
   processDialogFlowWebhook = async req => {
     try {
-      const history = new ChatbotHistory(...req.body);
+      const history = new ChatbotHistory(req.body);
       history.save();
 
       return {

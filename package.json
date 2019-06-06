@@ -23,7 +23,12 @@
     "containers:stop": "docker stop $(docker ps -aq)",
     "containers:rm": "docker rm $(docker ps -aq)",
     "lint": "eslint ./src --fix",
-    "test:unit": "mocha test/unit/**/*.spec.js --timeout 3000 --require @babel/register"
+    "test:unit": "mocha test/unit/**/*.spec.js --timeout 3000 --require @babel/register",
+    "test:e2e-local": "./node_modules/newman/bin/newman.js run test/texvet-api.json -e test/texvet-env-local.json",
+    "test:e2e-development": "./node_modules/newman/bin/newman.js run test/texvet-api.json -e test/texvet-env-development.json",
+    "test:e2e-staging": "./node_modules/newman/bin/newman.js run test/texvet-api.json -e test/texvet-env-staging.json",
+    "test:e2e-demo": "./node_modules/newman/bin/newman.js run test/texvet-api.json -e test/texvet-env-demo.json",
+    "test:e2e-production": "./node_modules/newman/bin/newman.js run test/texvet-api.json -e test/texvet-env-production.json"
   },
   "repository": {
     "type": "git",
@@ -88,6 +93,7 @@
     "eslint-plugin-unicorn": "6.0.*",
     "husky": "1.2.*",
     "mocha": "5.2.*",
+    "newman": "^4.5.0",
     "node-fetch": "2.6.0",
     "nodemon": "1.18.7",
     "proxyquire": "2.1.*",

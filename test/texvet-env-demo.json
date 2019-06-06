@@ -1,0 +1,19 @@
+{
+	"id": "942056fa-f643-4a69-a046-c4d8d5cca98d",
+	"name": "TEXTVET-LOCAL",
+	"values": [
+		{
+			"key": "API_BASE_URL",
+			"value": "http://demo-api.chatbot.texvet.org",
+			"enabled": true
+		},
+		{
+			"key": "DRUPAL_URL",
+			"value": "http://inventive-d8-txc.pantheonsite.io",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2019-06-06T13:23:22.642Z",
+	"_postman_exported_using": "Postman/7.1.1"
+}
