@@ -1,7 +1,7 @@
 /**
  * ChatbotHistory model
  */
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const ChatbotHistorySchema = new mongoose.Schema(
   {
@@ -65,4 +65,4 @@ try {
 
 const ChatbotHistoryModel = model;
 
-module.exports = ChatbotHistoryModel;
+export default ChatbotHistoryModel;

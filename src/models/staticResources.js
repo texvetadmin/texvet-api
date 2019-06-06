@@ -1,8 +1,8 @@
 /**
  * StaticResources model
  */
-const mongoose = require('mongoose');
-const isAlphanumeric = require('validator/lib/isAlphanumeric');
+import mongoose from 'mongoose';
+import isAlphanumeric from 'validator/lib/isAlphanumeric';
 
 const StaticResourcesSchema = new mongoose.Schema(
   {
@@ -46,4 +46,5 @@ try {
 }
 
 const StaticResourcesModel = model;
-module.exports = StaticResourcesModel;
+
+export default StaticResourcesModel;

@@ -1,8 +1,7 @@
 /**
  * NotificationType model
  */
-const mongoose = require('mongoose');
-// import mongoose from 'mongoose';
+import mongoose from 'mongoose';
 
 const NotificationTypeSchema = new mongoose.Schema(
   {
@@ -50,4 +49,5 @@ try {
 }
 
 const NotificationTypeModel = model;
-module.exports = NotificationTypeModel;
+
+export default NotificationTypeModel;

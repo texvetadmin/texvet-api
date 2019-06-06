@@ -1,8 +1,7 @@
 /**
  * FollowUp model
  */
-const mongoose = require('mongoose');
-// import mongoose from 'mongoose';
+import mongoose from 'mongoose';
 
 const FollowUpSchema = new mongoose.Schema(
   {
@@ -46,4 +45,5 @@ try {
 }
 
 const FollowUpModel = model;
-module.exports = FollowUpModel;
+
+export default FollowUpModel;

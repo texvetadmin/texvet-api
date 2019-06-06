@@ -1,7 +1,7 @@
 /**
  * NotificationTemplate model
  */
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const NotificationTemplateSchema = new mongoose.Schema(
   {
@@ -34,4 +34,5 @@ try {
 }
 
 const NotificationTemplateModel = model;
-module.exports = NotificationTemplateModel;
+
+export default NotificationTemplateModel;
