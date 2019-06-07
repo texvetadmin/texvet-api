@@ -1,8 +1,7 @@
 /**
  * County model
  */
-
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const CountySchema = new mongoose.Schema(
   {
@@ -54,8 +53,8 @@ let model;
 try {
   model = mongoose.model('CountySchema');
 } catch (error) {
-  model = mongoose.model('CountySchema', CountySchema);
+  model = mongoose.model('CountySchema', CountySchema, 'counties');
 }
 
 const CountyModel = model;
-module.exports = CountyModel;
+export default CountyModel;

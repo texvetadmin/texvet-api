@@ -6,7 +6,6 @@ const util = require('util');
 const { minify } = require('html-minifier');
 const _ = require('lodash');
 const yamlConfig = require('node-yaml-config');
-const NotificationTemplate = require('../src/models/notificationTemplate');
 require('../config');
 
 const readFile = util.promisify(fs.readFile);
@@ -16,7 +15,7 @@ const TEMPLATES_PATH = path.resolve(__dirname, 'templates', 'body');
 const envConfig = yamlConfig.load(path.resolve(__dirname, '../', 'env.yml'));
 const mongoDB = envConfig.MONGODB_URI;
 
-async function updateNotificationTemplate(name) {
+async function updateNotificationTemplate(name, NotificationTemplate) {
   console.log(`Updating notification template - ${name}`);
 
   try {
@@ -35,11 +34,7 @@ async function updateNotificationTemplate(name) {
       minifyJs: true,
     });
 
-    await NotificationTemplate.updateOne(
-      { name },
-      { subject: minifiedSubject, template: minifiedTemplate },
-      { upsert: true },
-    ).exec();
+    await NotificationTemplate.updateOne({ name }, { subject: minifiedSubject, template: minifiedTemplate }, { upsert: true }).exec();
   } catch (err) {
     console.log('Template update Error: ', err);
   }
@@ -65,16 +60,17 @@ function seedTemplates() {
 
     const intersection = _.intersection(sub, temp);
     if (!_.isEmpty(intersection)) {
+      const NotificationTemplate = require('./models/notificationTemplate');
       await NotificationTemplate.deleteMany({ name: { $nin: intersection } }).exec();
 
-      const tasks = intersection.map(name => updateNotificationTemplate(name));
+      const tasks = intersection.map(name => updateNotificationTemplate(name, NotificationTemplate));
       await Promise.all(tasks);
     }
-    
+
     await db.close();
   });
 
   mongoose.connect(mongoDB, { useNewUrlParser: true });
 }
 
-module.exports = { seedTemplates };
+module.exports = seedTemplates;
