@@ -1,13 +1,15 @@
 /* eslint-disable no-unused-vars */
-import AWS from 'aws-sdk';
-import fetch from 'node-fetch';
-import logger from '../utils/logger';
-import operationHoursFormatter from '../utils/helpers';
-import staticResources from '../models/staticResources';
-import FollowUp from '../models/followUp';
-import FollUpService from './FollowUpService';
-import EmailMessageLogService from './EmailMessageLogService';
-import ChatbotHistory from '../models/chatbotHistory';
+const AWS = require('aws-sdk');
+const fetch = require('node-fetch');
+const { logger } = require('../utils/logger');
+const { operationHoursFormatter } = require('../utils/helpers');
+const staticResources = require('../models/staticResources');
+const FollowUp = require('../models/followUp');
+const FollUpService = require('./FollowUpService');
+const EmailMessageLogService = require('./EmailMessageLogService');
+const ChatbotHistory = require('../models/chatbotHistory');
+const ServiceCategoryModel = require('../models/serviceCategory');
+const { getCountyIdByName } = require('../utils/counties');
 
 const sqs = new AWS.SQS({ region: process.env.USERPOOL_REGION });
 const QUEUE_URL = `https://sqs.${process.env.USERPOOL_REGION}.amazonaws.com/${process.env.ACCOUNT_ID}/${process.env.GENERATE_EMAIL_QUEUE_NAME}`;
@@ -32,9 +34,10 @@ class FulfillmentService {
         params: { slug },
         body: { location },
       } = req;
-      const county = location.toUpperCase() || '';
-
-      const url = `${process.env.DRUPAL_URL}/rest/v1/content/resources/services/${slug}/${county}`;
+      const county = getCountyIdByName(location);
+      const serviceId = await ServiceCategoryModel.find({ slug });
+      const query = `${serviceId}/${county}`;
+      const url = `${process.env.DRUPAL_URL}/rest/v1/content/resources/services/${query}`;
       const resp = await fetch(url);
       const response = await resp.json();
       return response.map(data => ({
@@ -54,10 +57,10 @@ class FulfillmentService {
         params: { slug },
         body: { location },
       } = req;
+      const county = getCountyIdByName(location);
+      const query = `${slug}/${county}`;
+      const url = `${process.env.DRUPAL_URL}/rest/v1/fulfillments/referrals/${query}`;
 
-      const type = slug.split('/')[1] || '';
-      const county = location.toUpperCase() || '';
-      const url = `${process.env.DRUPAL_URL}/rest/v1/fulfillments/referrals/${type}/${county}`;
       const resp = await fetch(url);
       const response = await resp.json();
       return response.map(data => ({
