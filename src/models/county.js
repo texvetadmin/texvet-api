@@ -53,7 +53,7 @@ let model;
 try {
   model = mongoose.model('CountySchema');
 } catch (error) {
-  model = mongoose.model('CountySchema', CountySchema);
+  model = mongoose.model('CountySchema', CountySchema, 'counties');
 }
 
 const CountyModel = model;

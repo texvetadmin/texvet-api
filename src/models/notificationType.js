@@ -45,7 +45,7 @@ let model;
 try {
   model = mongoose.model('NotificationType');
 } catch (error) {
-  model = mongoose.model('NotificationType', NotificationTypeSchema);
+  model = mongoose.model('NotificationType', NotificationTypeSchema, 'notificationTypes');
 }
 
 const NotificationTypeModel = model;

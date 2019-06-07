@@ -28,7 +28,7 @@ let model;
 try {
   model = mongoose.model('NotificationTemplate');
 } catch (error) {
-  model = mongoose.model('NotificationTemplate', NotificationTemplateSchema);
+  model = mongoose.model('NotificationTemplate', NotificationTemplateSchema, 'notificationTemplates');
 }
 
 const NotificationTemplateModel = model;

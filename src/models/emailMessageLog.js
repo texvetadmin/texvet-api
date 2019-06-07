@@ -49,7 +49,7 @@ let model;
 try {
   model = mongoose.model('EmailMessageLog');
 } catch (error) {
-  model = mongoose.model('EmailMessageLog', EmailMessageLogSchema);
+  model = mongoose.model('EmailMessageLog', EmailMessageLogSchema, 'emailMessageLogs');
 }
 
 const EmailMessageLogModel = model;

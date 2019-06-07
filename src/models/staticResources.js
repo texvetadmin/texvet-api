@@ -42,7 +42,7 @@ let model;
 try {
   model = mongoose.model('StaticResources');
 } catch (error) {
-  model = mongoose.model('StaticResources', StaticResourcesSchema);
+  model = mongoose.model('StaticResources', StaticResourcesSchema, 'staticResources');
 }
 
 const StaticResourcesModel = model;

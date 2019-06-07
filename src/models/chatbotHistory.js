@@ -60,7 +60,7 @@ let model;
 try {
   model = mongoose.model('ChatbotHistory');
 } catch (error) {
-  model = mongoose.model('ChatbotHistory', ChatbotHistorySchema);
+  model = mongoose.model('ChatbotHistory', ChatbotHistorySchema, 'chatbotHistory');
 }
 
 const ChatbotHistoryModel = model;

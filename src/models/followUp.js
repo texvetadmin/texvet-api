@@ -41,7 +41,7 @@ let model;
 try {
   model = mongoose.model('FollowUp');
 } catch (error) {
-  model = mongoose.model('FollowUp', FollowUpSchema);
+  model = mongoose.model('FollowUp', FollowUpSchema, 'followUps');
 }
 
 const FollowUpModel = model;
