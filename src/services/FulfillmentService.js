@@ -1,15 +1,15 @@
 /* eslint-disable no-unused-vars */
-const AWS = require('aws-sdk');
-const fetch = require('node-fetch');
-const { logger } = require('../utils/logger');
-const { operationHoursFormatter } = require('../utils/helpers');
-const staticResources = require('../models/staticResources');
-const FollowUp = require('../models/followUp');
-const FollUpService = require('./FollowUpService');
-const EmailMessageLogService = require('./EmailMessageLogService');
-const ChatbotHistory = require('../models/chatbotHistory');
-const ServiceCategoryModel = require('../models/serviceCategory');
-const { getCountyIdByName } = require('../utils/counties');
+import AWS from 'aws-sdk';
+import fetch from 'node-fetch';
+import logger from '../utils/logger';
+import operationHoursFormatter from '../utils/helpers';
+import staticResources from '../models/staticResources';
+import FollowUp from '../models/followUp';
+import FollUpService from './FollowUpService';
+import EmailMessageLogService from './EmailMessageLogService';
+import ChatbotHistory from '../models/chatbotHistory';
+import ServiceCategoryModel from '../models/serviceCategory';
+import { getCountyIdByName } from '../utils/counties';
 
 const sqs = new AWS.SQS({ region: process.env.USERPOOL_REGION });
 const QUEUE_URL = `https://sqs.${process.env.USERPOOL_REGION}.amazonaws.com/${process.env.ACCOUNT_ID}/${process.env.GENERATE_EMAIL_QUEUE_NAME}`;

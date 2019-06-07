@@ -1,7 +1,7 @@
 /**
  * NotificationTemplate model
  */
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const NotificationTemplateSchema = new mongoose.Schema(
   {
@@ -18,7 +18,6 @@ const NotificationTemplateSchema = new mongoose.Schema(
   { timestamps: true, versionKey: 'version' },
 );
 
-// Increment the version number before we save to the datastore.
 NotificationTemplateSchema.pre('save', function preSave(next) {
   this.increment();
   next();
@@ -26,12 +25,12 @@ NotificationTemplateSchema.pre('save', function preSave(next) {
 
 let model;
 
-// try to get schema, and if it doesn't exist, establish it.
 try {
   model = mongoose.model('NotificationTemplate');
 } catch (error) {
-  model = mongoose.model('NotificationTemplate', NotificationTemplateSchema);
+  model = mongoose.model('NotificationTemplate', NotificationTemplateSchema, 'notificationTemplates');
 }
 
 const NotificationTemplateModel = model;
-module.exports = NotificationTemplateModel;
+
+export default NotificationTemplateModel;

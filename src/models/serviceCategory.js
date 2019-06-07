@@ -2,7 +2,7 @@
  * County model
  */
 
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const ServiceCategoryShema = new mongoose.Schema(
   {
@@ -42,4 +42,5 @@ try {
 }
 
 const ServiceCategoryModel = model;
-module.exports = ServiceCategoryModel;
+
+export default ServiceCategoryModel;

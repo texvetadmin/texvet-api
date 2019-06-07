@@ -1,5 +1,4 @@
-// import pino from 'pino';
-const pino = require('pino');
+import pino from 'pino';
 
 const logger = pino({
   name: process.env.PROJECT_NAME,
@@ -8,4 +7,4 @@ const logger = pino({
   prettyPrint: process.env.NODE_ENV !== 'production',
 });
 
-module.exports = { logger };
+export default logger;

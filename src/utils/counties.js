@@ -1,4 +1,4 @@
-const County = require('../models/county');
+import County from '../models/county';
 
 const getCountyIdByName = async () => {
   const allCountiesId = '37953';
@@ -20,4 +20,4 @@ const getCountyIdByName = async () => {
   return `${county[0].id}+${allCountiesId}`;
 };
 
-module.exports = { getCountyIdByName };
+export default { getCountyIdByName };
