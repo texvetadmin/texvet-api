@@ -9,7 +9,7 @@ const FollUpService = require('./FollowUpService');
 const EmailMessageLogService = require('./EmailMessageLogService');
 const ChatbotHistory = require('../models/chatbotHistory');
 const ServiceCategoryModel = require('../models/serviceCategory');
-const { getCountyidByName } = require('../utils/get-coutyId-by-name');
+const { getCountyIdByName } = require('../utils/counties');
 
 const sqs = new AWS.SQS({ region: process.env.USERPOOL_REGION });
 const QUEUE_URL = `https://sqs.${process.env.USERPOOL_REGION}.amazonaws.com/${process.env.ACCOUNT_ID}/${process.env.GENERATE_EMAIL_QUEUE_NAME}`;
@@ -34,7 +34,7 @@ class FulfillmentService {
         params: { slug },
         body: { location },
       } = req;
-      const county = getCountyidByName(location);
+      const county = getCountyIdByName(location);
       const serviceId = await ServiceCategoryModel.find({ slug });
       const query = `${serviceId}/${county}`;
       const url = `${process.env.DRUPAL_URL}/rest/v1/content/resources/services/${query}`;
@@ -57,7 +57,7 @@ class FulfillmentService {
         params: { slug },
         body: { location },
       } = req;
-      const county = getCountyidByName(location);
+      const county = getCountyIdByName(location);
       const query = `${slug}/${county}`;
       const url = `${process.env.DRUPAL_URL}/rest/v1/fulfillments/referrals/${query}`;
 

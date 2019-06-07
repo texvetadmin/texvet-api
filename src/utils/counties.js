@@ -1,6 +1,6 @@
 const County = require('../models/county');
 
-const getCountyidByName = async () => {
+const getCountyIdByName = async () => {
   const allCountiesId = '37953';
   const county = await County.find({
     $or: [
@@ -20,4 +20,4 @@ const getCountyidByName = async () => {
   return `${county[0].id}+${allCountiesId}`;
 };
 
-module.exports = { getCountyidByName };
+module.exports = { getCountyIdByName };
