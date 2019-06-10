@@ -35,8 +35,11 @@ class FulfillmentService {
         body: { location },
       } = req;
       const county = getCountyIdByName(location);
-      const serviceId = await ServiceCategoryModel.find({ slug });
-      const query = `${serviceId}/${county}`;
+      const serviceId = async () => {
+        const slugData = await ServiceCategoryModel.find({ slug });
+        return slugData[0].target_id;
+      };
+      const query = `${serviceId()}/${county}`;
       const url = `${process.env.DRUPAL_URL}/rest/v1/content/resources/services/${query}`;
       const resp = await fetch(url);
       const response = await resp.json();
