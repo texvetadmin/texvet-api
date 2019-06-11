@@ -1,7 +1,11 @@
 import County from '../models/county';
 
-const getCountyIdByName = async () => {
+const getCountyIdByName = async loc => {
   const allCountiesId = '37953';
+  if (!loc) {
+    return allCountiesId;
+  }
+  const location = loc.toUpperCase();
   const county = await County.find({
     $or: [
       { name: location },
@@ -17,7 +21,7 @@ const getCountyIdByName = async () => {
   if (!county[0]) {
     return allCountiesId;
   }
-  return `${county[0].id}+${allCountiesId}`;
+  return `${allCountiesId}+${county[0].id}`;
 };
 
-export default { getCountyIdByName };
+export default getCountyIdByName;

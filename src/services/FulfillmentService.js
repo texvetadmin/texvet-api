@@ -9,7 +9,7 @@ import FollUpService from './FollowUpService';
 import EmailMessageLogService from './EmailMessageLogService';
 import ChatbotHistory from '../models/chatbotHistory';
 import ServiceCategoryModel from '../models/serviceCategory';
-import { getCountyIdByName } from '../utils/counties';
+import getCountyIdByName from '../utils/counties';
 
 const sqs = new AWS.SQS({ region: process.env.USERPOOL_REGION });
 const QUEUE_URL = `https://sqs.${process.env.USERPOOL_REGION}.amazonaws.com/${process.env.ACCOUNT_ID}/${process.env.GENERATE_EMAIL_QUEUE_NAME}`;
@@ -31,23 +31,30 @@ class FulfillmentService {
   getServicesBySlug = async req => {
     try {
       const {
-        params: { slug },
-        body: { location },
+        params: { slug, location },
       } = req;
-      const county = getCountyIdByName(location);
-      const serviceId = async () => {
+      const county = await getCountyIdByName(location);      
+      const getServiceId = async () => {
         const slugData = await ServiceCategoryModel.find({ slug });
+        if(!slugData[0]) {
+          throw new Error('Sorry, service category is invalid!');
+        }
         return slugData[0].target_id;
       };
-      const query = `${serviceId()}/${county}`;
-      const url = `${process.env.DRUPAL_URL}/rest/v1/content/resources/services/${query}`;
+      const serviceId = await getServiceId();
+      const query = `${serviceId}+${county}`;
+
+      const url = `${process.env.DRUPAL_URL}/rest/v1/fulfillments/services/${query}`;
       const resp = await fetch(url);
       const response = await resp.json();
-      return response.map(data => ({
-        name: data.title || null,
-        phone: data.field_phone || null,
-        hoursOfOperation: operationHoursFormatter(data),
-      }));
+
+      return response.map(data => {
+        return {
+          name: data.title || null,
+          phone: data.field_phone || null,
+          hoursOfOperation: operationHoursFormatter(data),
+        };
+      });
     } catch (err) {
       logger.error(`[${this.constructor.name}.getServicesBySlug] Error: ${err}`);
       throw err;
@@ -57,22 +64,23 @@ class FulfillmentService {
   getReferralsBySlug = async req => {
     try {
       const {
-        params: { slug },
-        body: { location },
+        params: { slug, location },
       } = req;
-      const county = getCountyIdByName(location);
+      const county = await getCountyIdByName(location);
       const query = `${slug}/${county}`;
-      const url = `${process.env.DRUPAL_URL}/rest/v1/fulfillments/referrals/${query}`;
-
+      const url = `${process.env.DRUPAL_URL}/rest/v1/content/resources/referrals/${query}`;
+      console.log('URL', url)
       const resp = await fetch(url);
       const response = await resp.json();
-      return response.map(data => ({
+       const re = response.map(data => ({
         organization: data.title || null,
         title: data.field_partner_contact_title || null,
         phone: data.field_phone || null,
         email: data.field_email || null,
-        additional_email: data.field_persons_direct_work_email || null,
+        additional_email: data.field_persons_direct_work_email || null
       }));
+      console.log('re', re)
+      return re
     } catch (err) {
       logger.error(`[${this.constructor.name}.getReferralsBySlug] Error: ${err}`);
       throw err;
