@@ -15,12 +15,45 @@ const sqs = new AWS.SQS({ region: process.env.USERPOOL_REGION });
 const QUEUE_URL = `https://sqs.${process.env.USERPOOL_REGION}.amazonaws.com/${process.env.ACCOUNT_ID}/${process.env.GENERATE_EMAIL_QUEUE_NAME}`;
 
 class FulfillmentService {
-  getResourcesBySlug = async req => {
+  
+  getResourcesBySlug_API = async (req) => {
     try {
       const {
-        params: { slug },
+        params: { slug, location },
       } = req;
+      this.getResourcesBySlug({slug, location});
+    } catch (err) {
+      logger.error(`[${this.constructor.name}.getServicesBySlug] Error: ${err}`);
+      throw err;
+    }
+  }
 
+  getServicesBySlug_API = async (req) => {
+    try {
+      const {
+        params: { slug, location },
+      } = req;
+      this.getServicesBySlug({slug, location});
+    } catch (err) {
+      logger.error(`[${this.constructor.name}.getServicesBySlug] Error: ${err}`);
+      throw err;
+    }
+  }
+
+  getReferralsBySlug_API = async (req) => {
+    try {
+      const {
+        params: { slug, location },
+      } = req;
+      this.getReferralsBySlug({slug, location});
+    } catch (err) {
+      logger.error(`[${this.constructor.name}.getReferralsBySlug] Error: ${err}`);
+      throw err;
+    }
+  }
+
+  getResourcesBySlug = async ({slug, location}) => {
+    try {
       return staticResources.findOne({ slug });
     } catch (err) {
       logger.error(`[${this.constructor.name}.getResourcesBySlug] Error: ${err}`);
@@ -28,11 +61,8 @@ class FulfillmentService {
     }
   };
 
-  getServicesBySlug = async req => {
-    try {
-      const {
-        params: { slug, location },
-      } = req;
+  getServicesBySlug = async ({ slug, location }) => {
+    try {      
       const county = await getCountyIdByName(location);      
       const getServiceId = async () => {
         const slugData = await ServiceCategoryModel.find({ slug });
@@ -61,11 +91,8 @@ class FulfillmentService {
     }
   };
 
-  getReferralsBySlug = async req => {
+  getReferralsBySlug = async ({ slug, location }) => {
     try {
-      const {
-        params: { slug, location },
-      } = req;
       const county = await getCountyIdByName(location);
       const query = `${slug}/${county}`;
       const url = `${process.env.DRUPAL_URL}/rest/v1/content/resources/referrals/${query}`;
