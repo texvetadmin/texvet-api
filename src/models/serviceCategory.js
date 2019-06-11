@@ -36,9 +36,9 @@ let model;
 
 // try to get schema, and if it doesn't exist, establish it.
 try {
-  model = mongoose.model('ServiceCategoryShema');
+  model = mongoose.model('ServiceCategory');
 } catch (error) {
-  model = mongoose.model('ServiceCategoryShema', ServiceCategoryShema);
+  model = mongoose.model('ServiceCategory', ServiceCategoryShema, 'serviceCategories');
 }
 
 const ServiceCategoryModel = model;
