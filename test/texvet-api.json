@@ -705,7 +705,6 @@
                   "pm.test(\"Should fail\", function() {",
                   "var jsonData = pm.response.json();",
                   "pm.expect(jsonData.message).to.not.be.null;",
-                  "pm.expect(jsonData.message).to.be.an('string').that.is.not.empty;",
                   "pm.expect(jsonData.message).to.equal('Sorry, something went wrong! Please try again later.');",
                   "});"
                 ],
@@ -724,14 +723,14 @@
               }
             ],
             "url": {
-              "raw": "{{API_BASE_URL}}/public/v1/fulfillments/services/va-claims1/noname",
+              "raw": "{{API_BASE_URL}}/public/v1/fulfillments/services/invalid-category/noname",
               "host": ["{{API_BASE_URL}}"],
               "path": [
                 "public",
                 "v1",
                 "fulfillments",
                 "services",
-                "va-claims1",
+                "invalid-category",
                 "noname"
               ]
             }
@@ -844,7 +843,7 @@
           "response": []
         },
         {
-          "name": "referrals - (VA-CLAIMS NONAME)",
+          "name": "referrals - (CVSO NONAME)",
           "event": [
             {
               "listen": "test",
@@ -885,14 +884,14 @@
               }
             ],
             "url": {
-              "raw": "{{API_BASE_URL}}/public/v1/fulfillments/referrals/va-claims/noname",
+              "raw": "{{API_BASE_URL}}/public/v1/fulfillments/referrals/cvso/noname",
               "host": ["{{API_BASE_URL}}"],
               "path": [
                 "public",
                 "v1",
                 "fulfillments",
                 "referrals",
-                "va-claims",
+                "cvso",
                 "noname"
               ]
             }
@@ -963,7 +962,8 @@
               "script": {
                 "id": "",
                 "exec": [
-                  "pm.test(\"Should Succeed\", function() {var jsonData = pm.response.json();",
+                  "pm.test(\"Should Succeed\", function() {",
+                  "var jsonData = pm.response.json();",
                   "pm.expect(pm.response).to.have.status(200);",
                   "pm.expect(jsonData.statusCode).to.be.equal(200);",
                   "});",

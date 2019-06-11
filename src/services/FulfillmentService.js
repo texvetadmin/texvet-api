@@ -33,13 +33,17 @@ class FulfillmentService {
       const {
         params: { slug, location },
       } = req;
-      const county = await getCountyIdByName(location);
+      const county = await getCountyIdByName(location);      
       const getServiceId = async () => {
         const slugData = await ServiceCategoryModel.find({ slug });
+        if(!slugData[0]) {
+          throw new Error('Sorry, service category is invalid!');
+        }
         return slugData[0].target_id;
       };
       const serviceId = await getServiceId();
       const query = `${serviceId}+${county}`;
+
       const url = `${process.env.DRUPAL_URL}/rest/v1/fulfillments/services/${query}`;
       const resp = await fetch(url);
       const response = await resp.json();
