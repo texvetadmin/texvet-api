@@ -15,44 +15,43 @@ const sqs = new AWS.SQS({ region: process.env.USERPOOL_REGION });
 const QUEUE_URL = `https://sqs.${process.env.USERPOOL_REGION}.amazonaws.com/${process.env.ACCOUNT_ID}/${process.env.GENERATE_EMAIL_QUEUE_NAME}`;
 
 class FulfillmentService {
-  
-  getResourcesBySlug_API = async (req) => {
+  getResourcesBySlugAPI = async req => {
     try {
       const {
-        params: { slug, location },
+        params: { slug },
       } = req;
-      this.getResourcesBySlug({slug, location});
+      return this.getResourcesBySlug(slug);
     } catch (err) {
       logger.error(`[${this.constructor.name}.getServicesBySlug] Error: ${err}`);
       throw err;
     }
   }
 
-  getServicesBySlug_API = async (req) => {
+  getServicesBySlugAPI = async req => {
     try {
       const {
         params: { slug, location },
       } = req;
-      this.getServicesBySlug({slug, location});
+      return this.getServicesBySlug({ slug, location });
     } catch (err) {
       logger.error(`[${this.constructor.name}.getServicesBySlug] Error: ${err}`);
       throw err;
     }
   }
 
-  getReferralsBySlug_API = async (req) => {
+  getReferralsBySlugAPI = async req => {
     try {
       const {
         params: { slug, location },
       } = req;
-      this.getReferralsBySlug({slug, location});
+      return this.getReferralsBySlug({ slug, location });
     } catch (err) {
       logger.error(`[${this.constructor.name}.getReferralsBySlug] Error: ${err}`);
       throw err;
     }
   }
 
-  getResourcesBySlug = async ({slug, location}) => {
+  getResourcesBySlug = async slug => {
     try {
       return staticResources.findOne({ slug });
     } catch (err) {
@@ -62,11 +61,11 @@ class FulfillmentService {
   };
 
   getServicesBySlug = async ({ slug, location }) => {
-    try {      
-      const county = await getCountyIdByName(location);      
+    try {
+      const county = await getCountyIdByName(location);
       const getServiceId = async () => {
         const slugData = await ServiceCategoryModel.find({ slug });
-        if(!slugData[0]) {
+        if (!slugData[0]) {
           throw new Error('Sorry, service category is invalid!');
         }
         return slugData[0].target_id;
@@ -78,13 +77,11 @@ class FulfillmentService {
       const resp = await fetch(url);
       const response = await resp.json();
 
-      return response.map(data => {
-        return {
-          name: data.title || null,
-          phone: data.field_phone || null,
-          hoursOfOperation: operationHoursFormatter(data),
-        };
-      });
+      return response.map(data => ({
+        name: data.title || null,
+        phone: data.field_phone || null,
+        hoursOfOperation: operationHoursFormatter(data),
+      }));
     } catch (err) {
       logger.error(`[${this.constructor.name}.getServicesBySlug] Error: ${err}`);
       throw err;
@@ -96,18 +93,17 @@ class FulfillmentService {
       const county = await getCountyIdByName(location);
       const query = `${slug}/${county}`;
       const url = `${process.env.DRUPAL_URL}/rest/v1/content/resources/referrals/${query}`;
-      console.log('URL', url)
+
       const resp = await fetch(url);
       const response = await resp.json();
-       const re = response.map(data => ({
+      const re = response.map(data => ({
         organization: data.title || null,
         title: data.field_partner_contact_title || null,
         phone: data.field_phone || null,
         email: data.field_email || null,
-        additional_email: data.field_persons_direct_work_email || null
+        additional_email: data.field_persons_direct_work_email || null,
       }));
-      console.log('re', re)
-      return re
+      return re;
     } catch (err) {
       logger.error(`[${this.constructor.name}.getReferralsBySlug] Error: ${err}`);
       throw err;
