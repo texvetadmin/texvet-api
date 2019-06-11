@@ -10,7 +10,7 @@ class FulfillmentController {
 
   getResourcesBySlug = async (req, res) => {
     try {
-      const info = await this.fulfillmentService.getResourcesBySlug(req);
+      const info = await this.fulfillmentService.getResourcesBySlugAPI(req);
       return success(res, info);
     } catch (err) {
       logger.error(`[${this.constructor.name}.getResourcesBySlug] Error: ${err}`);
@@ -20,7 +20,7 @@ class FulfillmentController {
 
   getServicesBySlug = async (req, res) => {
     try {
-      const info = await this.fulfillmentService.getServicesBySlug(req);
+      const info = await this.fulfillmentService.getServicesBySlugAPI(req);
       return success(res, info);
     } catch (err) {
       logger.error(`[${this.constructor.name}.getServicesBySlug] Error: ${err}`);
@@ -30,7 +30,7 @@ class FulfillmentController {
 
   getReferralsBySlug = async (req, res) => {
     try {
-      const info = await this.fulfillmentService.getReferralsBySlug(req);
+      const info = await this.fulfillmentService.getReferralsBySlugAPI(req);
       return success(res, info);
     } catch (err) {
       logger.error(`[${this.constructor.name}.getReferralsBySlug] Error: ${err}`);
