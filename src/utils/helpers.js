@@ -1,7 +1,7 @@
 /* eslint-disable security/detect-object-injection */
 const operationHoursFormatter = data => {
-  const days = Object.keys(data).filter(key => key.indexOf('hours') !== -1);
-  return days
+  let days = Object.keys(data).filter(key => key.indexOf('hours') !== -1);
+  days = days
     .map(item => {
       if (data[item] && data[item].length && typeof data[item][0] === 'object') {
         return null;
@@ -10,17 +10,21 @@ const operationHoursFormatter = data => {
       let start = null;
       let end = null;
       if (data[item].length) {
-        console.log('data[item]', data[item]);
         start = new Date(data[item].split(' ')[0]).getHours();
         end = new Date(data[item].split(' ')[2]).getHours();
       }
-      return {
-        day: day.charAt(0).toUpperCase() + day.slice(1),
-        start,
-        end,
-      };
+      return start || end
+        ? {
+          day: day.charAt(0).toUpperCase() + day.slice(1),
+          start,
+          end,
+        }
+        : null;
     })
     .filter(d => d);
+  return days.length ? days : null;
 };
 
-export default operationHoursFormatter;
+const fieldFormatter = field => (field.length ? field.map(p => p.value).join(', ') : null);
+
+export { operationHoursFormatter, fieldFormatter };

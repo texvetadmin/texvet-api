@@ -21,9 +21,9 @@ const getServices = async () => {
       target_id: id,
       target_uuid: uuid,
       url,
-      title,
-      slug,
-    }
+      title: title.toLowerCase(),
+      slug: slug.toLowerCase().replace(/-|\s/g, ''),
+    };
   });
 
   if (!fs.existsSync(collectionsPath)) {
