@@ -2,8 +2,8 @@
 import AWS from 'aws-sdk';
 import fetch from 'node-fetch';
 import logger from '../utils/logger';
-import {operationHoursFormatter, fieldFormatter} from '../utils/helpers';
-import staticResources from '../models/staticResources';
+import { operationHoursFormatter, fieldFormatter} from '../utils/helpers';
+import StaticResources from '../models/staticResources';
 import FollowUp from '../models/followUp';
 import FollUpService from './FollowUpService';
 import EmailMessageLogService from './EmailMessageLogService';
@@ -54,7 +54,7 @@ class FulfillmentService {
 
   getResourcesBySlug = async ({slug}) => {
     try {
-      return staticResources.findOne({ slug });
+      return StaticResources.findOne({ slug });
     } catch (err) {
       logger.error(`[${this.constructor.name}.getResourcesBySlug] Error: ${err}`);
       throw err;
@@ -171,11 +171,13 @@ class FulfillmentService {
           parameters: { slug, location },
           intent,
         },
-      } = req.body;      
-      if(!location) {
-        const fulfillmentText = `Sorry, what is your county?`;
-        return dialogFlowResponse({ fulfillmentText })
+      } = req.body;
+
+      if (!location) {
+        const fulfillmentText = 'Sorry, what is your county?';
+        return dialogFlowResponse({ fulfillmentText });
       }
+
       if (!slug) {
         const county = await getCountyNameByCity(location);
         const fulfillmentText = `What can I help you find in ${county} County?`;
@@ -184,22 +186,27 @@ class FulfillmentService {
             name: location,
             parameters: {
               input: location,
-              output: county
-            }                
+              output: county,
+            },
           },
-        ]
-        return dialogFlowResponse({fulfillmentText, outputContext})
-      }
-      const staticResourcesSlugs = [
-         'reduced-fee-sporting-license',
-         'property-taxes', 
-         'drivers-license-veteran-designation',
-         'free-toll-roads',
-         'the-hazlewood-act',
-         'free-park-pass',
         ];
+
+        return dialogFlowResponse({ fulfillmentText, outputContext });
+      }
+
+      const staticResourcesSlugs = [
+        'reduced-fee-sporting-license',
+        'property-taxes',
+        'drivers-license-veteran-designation',
+        'free-toll-roads',
+        'the-hazlewood-act',
+        'free-park-pass',
+      ];
+
       const query = slug.toLowerCase();
-      let referrals, services, staticResources;
+      let staticResources;
+      let referrals;
+      let services;
 
       const isReferralsType = ['mvpn', 'cvso', 'vcso'].map(type => query.replace(/-|\s/g, '').indexOf(type) !== -1).some(elem => elem);
       const isStaticResourcesType = staticResourcesSlugs.map(type => query.indexOf(type) !== -1).some(elem => elem);
@@ -207,16 +214,16 @@ class FulfillmentService {
       if (!isReferralsType && !isStaticResourcesType) {
         referrals = await this.getReferralsBySlug({ slug: null, location });
         services = await this.getServicesBySlug({ slug: query, location });
-      } else if(!isStaticResourcesType) {
+      } else if (!isStaticResourcesType) {
         referrals = await this.getReferralsBySlug({ slug: query, location });
-      } else if(!isReferralsType && isStaticResourcesType) {
+      } else if (!isReferralsType && isStaticResourcesType) {
         staticResources = await this.getResourcesBySlug({ slug: query });
       }
 
       const fulfillmentText = `I found the following information in ${location}. Do you want me to email you this information?`;
-      const outputContext = [{ referrals, services, staticResources}]
+      const outputContext = [{ referrals, services, staticResources }];
 
-      return dialogFlowResponse({fulfillmentText, outputContext});      
+      return dialogFlowResponse({ fulfillmentText, outputContext });
     } catch (err) {
       logger.error(`[${this.constructor.name}.processDialogFlowWebhook] Error: ${err}`);
       throw err;
