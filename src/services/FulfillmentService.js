@@ -2,14 +2,15 @@
 import AWS from 'aws-sdk';
 import fetch from 'node-fetch';
 import logger from '../utils/logger';
-import operationHoursFormatter from '../utils/helpers';
-import staticResources from '../models/staticResources';
+import { operationHoursFormatter, fieldFormatter} from '../utils/helpers';
+import StaticResources from '../models/staticResources';
 import FollowUp from '../models/followUp';
 import FollUpService from './FollowUpService';
 import EmailMessageLogService from './EmailMessageLogService';
 import ChatbotHistory from '../models/chatbotHistory';
 import ServiceCategoryModel from '../models/serviceCategory';
-import getCountyIdByName from '../utils/counties';
+import { getCountyIdByName, getCountyNameByCity} from '../utils/counties';
+import dialogFlowResponse from '../templates/dialogFlowResponse';
 
 const sqs = new AWS.SQS({ region: process.env.USERPOOL_REGION });
 const QUEUE_URL = `https://sqs.${process.env.USERPOOL_REGION}.amazonaws.com/${process.env.ACCOUNT_ID}/${process.env.GENERATE_EMAIL_QUEUE_NAME}`;
@@ -25,7 +26,7 @@ class FulfillmentService {
       logger.error(`[${this.constructor.name}.getServicesBySlug] Error: ${err}`);
       throw err;
     }
-  }
+  };
 
   getServicesBySlugAPI = async req => {
     try {
@@ -37,7 +38,7 @@ class FulfillmentService {
       logger.error(`[${this.constructor.name}.getServicesBySlug] Error: ${err}`);
       throw err;
     }
-  }
+  };
 
   getReferralsBySlugAPI = async req => {
     try {
@@ -49,11 +50,11 @@ class FulfillmentService {
       logger.error(`[${this.constructor.name}.getReferralsBySlug] Error: ${err}`);
       throw err;
     }
-  }
+  };
 
-  getResourcesBySlug = async slug => {
+  getResourcesBySlug = async ({slug}) => {
     try {
-      return staticResources.findOne({ slug });
+      return StaticResources.findOne({ slug });
     } catch (err) {
       logger.error(`[${this.constructor.name}.getResourcesBySlug] Error: ${err}`);
       throw err;
@@ -64,7 +65,12 @@ class FulfillmentService {
     try {
       const county = await getCountyIdByName(location);
       const getServiceId = async () => {
-        const slugData = await ServiceCategoryModel.find({ slug });
+        const slugData = await ServiceCategoryModel.find({
+          $or: [
+            { title: slug },
+            { slug },
+          ],
+        });
         if (!slugData[0]) {
           throw new Error('Sorry, service category is invalid!');
         }
@@ -78,8 +84,8 @@ class FulfillmentService {
       const response = await resp.json();
 
       return response.map(data => ({
-        name: data.title || null,
-        phone: data.field_phone || null,
+        name: data.title ? fieldFormatter(data.title) : null,
+        phone: data.field_phone ? fieldFormatter(data.field_phone) : null,
         hoursOfOperation: operationHoursFormatter(data),
       }));
     } catch (err) {
@@ -91,19 +97,21 @@ class FulfillmentService {
   getReferralsBySlug = async ({ slug, location }) => {
     try {
       const county = await getCountyIdByName(location);
-      const query = `${slug}/${county}`;
+      const query = slug ? `${slug}/${county}` : county;
       const url = `${process.env.DRUPAL_URL}/rest/v1/content/resources/referrals/${query}`;
 
       const resp = await fetch(url);
       const response = await resp.json();
-      const re = response.map(data => ({
-        organization: data.title || null,
-        title: data.field_partner_contact_title || null,
-        phone: data.field_phone || null,
-        email: data.field_email || null,
-        additional_email: data.field_persons_direct_work_email || null,
-      }));
-      return re;
+      return response.map(data => {
+        
+        return {
+          organization: data.title ? data.title[0].value : null,
+          title: data.field_partner_contact_title || null,
+          phone: data.field_phone ? fieldFormatter(data.field_phone) : null,
+          email: data.field_email ? fieldFormatter(data.field_email) : null,
+          additional_email: data.field_persons_direct_work_email || null,
+        };
+      });
     } catch (err) {
       logger.error(`[${this.constructor.name}.getReferralsBySlug] Error: ${err}`);
       throw err;
@@ -157,63 +165,65 @@ class FulfillmentService {
     try {
       const history = new ChatbotHistory(req.body);
       history.save();
+      const {
+        queryResult: {
+          queryText,
+          parameters: { slug, location },
+          intent,
+        },
+      } = req.body;
 
-      return {
-        fulfillmentText: 'Thank you for your input. It has been logged.',
-        fulfillmentMessages: [
+      if (!location) {
+        const fulfillmentText = 'Sorry, what is your county?';
+        return dialogFlowResponse({ fulfillmentText });
+      }
+
+      if (!slug) {
+        const county = await getCountyNameByCity(location);
+        const fulfillmentText = `What can I help you find in ${county} County?`;
+        const outputContext = [
           {
-            card: {
-              title: 'card title',
-              subtitle: 'card text',
-              imageUri: 'https://assistant.google.com/static/images/molecule/Molecule-Formation-stop.png',
-              buttons: [
-                {
-                  text: 'button text',
-                  postback: 'https://assistant.google.com/',
-                },
-              ],
-            },
-          },
-        ],
-        source: 'example.com',
-        payload: {
-          google: {
-            expectUserResponse: true,
-            richResponse: {
-              items: [
-                {
-                  simpleResponse: {
-                    textToSpeech: 'this is a simple response',
-                  },
-                },
-              ],
-            },
-          },
-          facebook: {
-            text: 'Hello, Facebook!',
-          },
-          slack: {
-            text: 'This is a text response for Slack.',
-          },
-        },
-        outputContexts: [
-          {
-            // eslint-disable-next-line no-template-curly-in-string
-            name: 'projects/${PROJECT_ID}/agent/sessions/${SESSION_ID}/contexts/context name',
-            lifespanCount: 5,
+            name: location,
             parameters: {
-              param: 'param value',
+              input: location,
+              output: county,
             },
           },
-        ],
-        followupEventInput: {
-          name: 'event name',
-          languageCode: 'en-US',
-          parameters: {
-            param: 'param value',
-          },
-        },
-      };
+        ];
+
+        return dialogFlowResponse({ fulfillmentText, outputContext });
+      }
+
+      const staticResourcesSlugs = [
+        'reduced-fee-sporting-license',
+        'property-taxes',
+        'drivers-license-veteran-designation',
+        'free-toll-roads',
+        'the-hazlewood-act',
+        'free-park-pass',
+      ];
+
+      const query = slug.toLowerCase();
+      let staticResources;
+      let referrals;
+      let services;
+
+      const isReferralsType = ['mvpn', 'cvso', 'vcso'].map(type => query.replace(/-|\s/g, '').indexOf(type) !== -1).some(elem => elem);
+      const isStaticResourcesType = staticResourcesSlugs.map(type => query.indexOf(type) !== -1).some(elem => elem);
+
+      if (!isReferralsType && !isStaticResourcesType) {
+        referrals = await this.getReferralsBySlug({ slug: null, location });
+        services = await this.getServicesBySlug({ slug: query, location });
+      } else if (!isStaticResourcesType) {
+        referrals = await this.getReferralsBySlug({ slug: query, location });
+      } else if (!isReferralsType && isStaticResourcesType) {
+        staticResources = await this.getResourcesBySlug({ slug: query });
+      }
+
+      const fulfillmentText = `I found the following information in ${location}. Do you want me to email you this information?`;
+      const outputContext = [{ referrals, services, staticResources }];
+
+      return dialogFlowResponse({ fulfillmentText, outputContext });
     } catch (err) {
       logger.error(`[${this.constructor.name}.processDialogFlowWebhook] Error: ${err}`);
       throw err;

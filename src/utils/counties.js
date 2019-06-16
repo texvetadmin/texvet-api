@@ -24,4 +24,27 @@ const getCountyIdByName = async loc => {
   return `${allCountiesId}+${county[0].id}`;
 };
 
-export default getCountyIdByName;
+const getCountyNameByCity = async name => {
+  if (!name) {
+    return null;
+  }
+  const location = name.toUpperCase();
+  const county = await County.find({
+    $or: [
+      { name: location },
+      {
+        cities: {
+          $elemMatch: {
+            value: location,
+          },
+        },
+      },
+    ],
+  });
+  if (!county[0]) {
+    return null;
+  }
+  return `${county[0].name}`;
+};
+
+export { getCountyIdByName, getCountyNameByCity };
