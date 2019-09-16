@@ -24,11 +24,11 @@
     "containers:rm": "docker rm $(docker ps -aq)",
     "lint": "eslint ./src --fix",
     "test:unit": "mocha test/unit/**/*.spec.js --timeout 3000 --require @babel/register",
-    "test:e2e-local": "./node_modules/newman/bin/newman.js run test/texvet-api.json -e test/texvet-env-local.json",
-    "test:e2e-development": "./node_modules/newman/bin/newman.js run test/texvet-api.json -e test/texvet-env-development.json",
-    "test:e2e-staging": "./node_modules/newman/bin/newman.js run test/texvet-api.json -e test/texvet-env-staging.json",
-    "test:e2e-demo": "./node_modules/newman/bin/newman.js run test/texvet-api.json -e test/texvet-env-demo.json",
-    "test:e2e-production": "./node_modules/newman/bin/newman.js run test/texvet-api.json -e test/texvet-env-production.json"
+    "test:e2e-local": "TEST_ENV=local mocha test/texvet-api-mocha/*.js",
+    "test:e2e-development": "TEST_ENV=development mocha test/texvet-api-mocha/*.js",
+    "test:e2e-staging": "TEST_ENV=staging mocha test/texvet-api-mocha/*.js",
+    "test:e2e-demo": "TEST_ENV=demo mocha test/texvet-api-mocha/*.js",
+    "test:e2e-production": "TEST_ENV=production mocha test/texvet-api-mocha/*.js"
   },
   "repository": {
     "type": "git",
@@ -71,7 +71,7 @@
     "babel-eslint": "10.0.*",
     "babel-loader": "8.0.*",
     "babel-plugin-source-map-support": "2.0.*",
-    "chai": "4.2.*",
+    "chai": "^4.2.0",
     "concurrently": "4.0.*",
     "cross-env": "5.2.*",
     "eslint": "5.9.*",
@@ -82,10 +82,12 @@
     "eslint-plugin-security": "1.4.*",
     "eslint-plugin-unicorn": "6.0.*",
     "husky": "1.2.*",
-    "mocha": "5.2.*",
+    "install": "^0.13.0",
+    "mocha": "^5.2.0",
     "newman": "^4.5.0",
     "node-fetch": "2.6.0",
     "nodemon": "1.18.7",
+    "npm": "^6.11.3",
     "proxyquire": "2.1.*",
     "serverless": "1.32.*",
     "serverless-domain-manager": "2.6.*",
@@ -93,7 +95,7 @@
     "serverless-plugin-warmup": ">=4.0.0-rc.1 < 4.0.1",
     "serverless-webpack": "5.2.*",
     "sinon": "7.1.*",
-    "supertest": "3.3.*",
+    "supertest": "^3.3.0",
     "webpack": "4.25.*",
     "webpack-node-externals": "1.7.*"
   }
