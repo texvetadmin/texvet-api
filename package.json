@@ -51,7 +51,7 @@
     "lodash": "4.17.*",
     "lodash.find": "4.6.*",
     "mongo-seeding": "3.0.*",
-    "mongoose": "5.4.*",
+    "mongoose": "5.7.*",
     "mustache": "^3.0.1",
     "node-fetch": "2.6.0",
     "node-yaml-config": "0.0.*",
