@@ -58,7 +58,7 @@
     "pino": "5.9.*",
     "pino-pretty": "2.4.*",
     "serverless-http": "1.8.*",
-    "socket.io": "^2.2.0",
+    "socket.io": "^2.4.0",
     "validator": "10.9.0",
     "yargs": "12.0.*"
   },
