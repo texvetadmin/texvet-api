@@ -42,7 +42,7 @@
     "aws-sdk": "2.355.*",
     "body-parser": "1.18.*",
     "chalk": "2.4.*",
-    "express": "4.16.*",
+    "express": "4.17.*",
     "express-paginate": "1.0.*",
     "fs-extra": "7.0.*",
     "geopoint": "^1.0.1",
